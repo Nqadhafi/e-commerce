@@ -1,0 +1,21 @@
+.nav-item:hover{
+    background-color: rgb(240, 225, 17) !important;
+    border: solid 0;
+    border-radius: 0.5rem !important;
+}
+
+.card{
+    border: none !important;
+}
+.harga{
+    color: rgb(248, 118, 71) !important;
+    font-weight: 500;
+}
+
+.product {
+    display: flex !important;
+    flex-direction: row !important;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
