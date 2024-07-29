@@ -6,7 +6,11 @@ if (isset($_POST['tambah'])){
     $p_deskripsi = $_POST['deskripsi_produk'];
     $p_gambar = $_FILES['gambar_produk']['name'];
     $p_gambar_temp = $_FILES['gambar_produk']['tmp_name'];
-    $p_folder_upload = '../assets/uploads/'.$p_gambar;
+
+    // Generate unique name for the file
+    $file_extension = pathinfo($p_gambar, PATHINFO_EXTENSION);
+    $unique_name = uniqid() . '.' . $file_extension;
+    $p_folder_upload = '../assets/uploads/'.$unique_name;
 
     $query = mysqli_query($config, "INSERT INTO `tb_produk`(
     nama_produk,
@@ -18,22 +22,18 @@ if (isset($_POST['tambah'])){
     '$p_nama',
     '$p_harga',
     '$p_deskripsi',
-    '$p_gambar'
+    '$unique_name'
     )");
 
     if($query){
         move_uploaded_file($p_gambar_temp, $p_folder_upload);
         echo "
-        <div class='bg-success text-center'>
-        <h5 class='p-2' style='color:white;'>Sukses menambahkan produk</h5>
-        </div>
-        ";
+        <script> alert('Produk berhasil ditambah');window.location.href='./index.php?page=tambah';</script>";
+        exit();
     }
     else{
         echo "
-        <div class='bg-danger text-center'>
-        <h5 class='p-2' style='color:white;'>Gagal menambahkan produk</h5>
-        </div>
+        <script> alert('Produk gagal ditambahkan');window.location.href='./index.php?page=tambah';</script>
         ";
     }
 }
@@ -61,10 +61,7 @@ if (isset($_POST['tambah'])){
             </div>
             <div class="text-center mt-5 mb-3">
             <input type="submit" value="Tambah Produk" name="tambah" class=" btn btn-primary px-3 py-1">
-      
         </div>
         </div>
-        
-    </div>
     </div>
 </form>

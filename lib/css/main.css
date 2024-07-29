@@ -18,4 +18,7 @@
     flex-wrap: wrap;
     justify-content: center;
 }
+.product-img img{
+ max-width: 10rem;
+}
 
