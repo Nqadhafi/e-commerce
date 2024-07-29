@@ -57,6 +57,10 @@ $data = mysqli_fetch_all($query, MYSQLI_ASSOC);
             include './upload.php';
         } else if ($_GET['page'] == 'check') {
             include './confirm.php';
+            
+        }
+        else if ($_GET['page'] == 'update') {
+            include './update.php';
             exit();
         }
     }
@@ -91,7 +95,7 @@ $data = mysqli_fetch_all($query, MYSQLI_ASSOC);
                     <td>Rp. <?php echo $data['harga_produk']?>,-</td>
                     <td><?php echo $data['deskripsi_produk']?></td>
                     <td>
-                        <a href="" class="btn btn-warning mb-1">Edit</a>
+                        <a href="./?page=update&id=<?php echo $data['id_produk'] ?>" class="btn btn-warning mb-1">Edit</a>
                         <a href="./delete.php?id=<?php echo $data['id_produk'] ?>" class="btn btn-danger mb-1" onclick="return confirm('Anda yakin menghapus produk ini?');">Hapus</a>
                     </td>
                 </tr>
