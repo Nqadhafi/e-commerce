@@ -57,6 +57,7 @@ $data = mysqli_fetch_all($query, MYSQLI_ASSOC);
             include './upload.php';
         } else if ($_GET['page'] == 'check') {
             include './confirm.php';
+            exit();
             
         }
         else if ($_GET['page'] == 'update') {
