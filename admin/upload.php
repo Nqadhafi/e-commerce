@@ -23,12 +23,19 @@ if (isset($_POST['tambah'])){
 
     if($query){
         move_uploaded_file($p_gambar_temp, $p_folder_upload);
-        echo "Sukses tambah";
+        echo "
+        <div class='bg-success text-center'>
+        <h5 class='p-2' style='color:white;'>Sukses menambahkan produk</h5>
+        </div>
+        ";
     }
     else{
-        echo "Tambah gagal";
+        echo "
+        <div class='bg-danger text-center'>
+        <h5 class='p-2' style='color:white;'>Gagal menambahkan produk</h5>
+        </div>
+        ";
     }
-    
 }
 ?>
 
