@@ -60,10 +60,12 @@ include ('../config.php')
         <h4 class="text-center mt-3">List Produk</h4>
         <table  class="table table-striped border" >
             <thead class="table-primary">
+                <td>No</td>
                 <td>Gambar Produk</td>
                 <td>Nama Produk</td>
                 <td>Deskripsi Produk</td>
                 <td>Harga Produk</td>
+                <td class="w-25">Action</td>
             </thead>
             <tr>
                 <td>
@@ -72,6 +74,12 @@ include ('../config.php')
                 <td></td>
                 <td></td>
                 <td></td>
+                <td></td>
+                <td>
+                    <a href="" class="btn btn-success mb-1">Konfirmasi</a>
+                    <a href="" class="btn btn-warning mb-1">Batal</a>
+                    <a href="" class="btn btn-danger mb-1">Hapus</a>
+                </td>
             </tr>
         </table>
     </div>
