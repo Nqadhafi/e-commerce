@@ -24,3 +24,8 @@
  .card img{
     height: 15rem;
  }
+
+ .front-display img{
+    height: 100% !important;
+    max-width: 20rem;
+ }

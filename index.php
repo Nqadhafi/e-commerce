@@ -1,11 +1,10 @@
 <?php
 include('header.php');
-include('config.php');
 $query = mysqli_query($config, "SELECT * FROM tb_produk");
 $data = mysqli_fetch_all($query, MYSQLI_ASSOC);
 
 ?>
-<body>
+<body class="bg-success">
     <div class="container-fluid">
         <!-- Header  -->
         <div class="text-center mt-3">
@@ -18,13 +17,15 @@ $data = mysqli_fetch_all($query, MYSQLI_ASSOC);
             <?php foreach ($data as $data) : ?>
                 <!-- Produk -->
                 <div class="col-md-4 d-flex justify-content-center mb-4">
+                    <a href="./product.php?id=<?php echo $data['id_produk'] ?>" class="text-decoration-none">
                     <div class="card border-secondary border" style="width: 15rem;">
-                        <img src="./assets/uploads/<?php echo $data['gambar_produk'] ?>" class="card-img-top front-display p-2" alt="...">
+                        <img src="./assets/uploads/<?php echo $data['gambar_produk'] ?>" class="card-img-top p-2" alt="...">
                         <div class="card-body border-top border-secondary">
                             <h5 class="card-title"><?php echo $data['nama_produk']?></h5>
                             <p class="card-text harga">Rp.<?php echo $data['harga_produk']?></p>
                         </div>
                     </div>
+                    </a>
                 </div>
                 <!-- Produk End -->
                 <?php endforeach; ?>
