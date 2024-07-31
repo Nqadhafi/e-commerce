@@ -43,6 +43,7 @@ if (isset($_POST['tambah'])){
     <div class="container d-flex flex-column justify-content-center align-self-center align-items-center">
         <div class="mt-3 p-3 border rounded">
             <h4 class="text-center">Tambah Produk</h4>
+            <p class="text-center"> <i>*Mohon upload gambar berukuran 1:1</i></p>
             <div class="mb-2 ">
                 <label for="nama_produk" class="form-label">Nama Produk :</label>
                 <input type="text" class="form-control" name="nama_produk" required>
