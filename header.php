@@ -13,7 +13,7 @@ include('config.php');
 
 <body>
     <!-- Navbar -->
-    <nav class="navbar navbar-expand-md d-flex flex-row bg-secondary">
+    <nav class="navbar navbar-expand-md d-flex flex-row bg-warning">
         <div class="container-fluid d-flex flex-column">
             <div class="d-flex flex-row justify-content-between">
             <a class="navbar-brand" href="./"><h1>Toko Onlineku</h1></a>
