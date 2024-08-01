@@ -3,6 +3,7 @@ include('../config.php');
 $query = mysqli_query($config, "SELECT * FROM tb_produk");
 
 $data = mysqli_fetch_all($query, MYSQLI_ASSOC);
+echo $id_cust;
 ?>
 <!DOCTYPE html>
 <html lang="en">

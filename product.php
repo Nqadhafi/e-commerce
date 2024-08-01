@@ -8,6 +8,8 @@ else {
 }
 $query = mysqli_query($config, "SELECT * FROM tb_produk WHERE id_produk = '$id'");
 $data = mysqli_fetch_all($query, MYSQLI_ASSOC);
+
+echo $id_cust;
 ?>
 
 <div class="container-fluid bg-light">
@@ -24,9 +26,26 @@ $data = mysqli_fetch_all($query, MYSQLI_ASSOC);
             <hr>
             <p class="card-text fw-semibold">Deskripsi produk :</p>
             <p class="card-text"><?php echo $data[0]['deskripsi_produk'] ?></p>
-            <form action="" method="post" class="d-flex gap-3">
+            <!-- form -->
+            
+            <form action="" method="post">
+            <!-- hidden input data -->
+            <div class="mb-3" style="max-width:7rem;">
+                        <div class="input-group">
+                            <button class="btn btn-outline-secondary" type="button" onclick="decreaseQty()">-</button>
+                            <input type="number" class="form-control" id="qty" name="qty" value="1" min="1" required>
+                            <button class="btn btn-outline-secondary" type="button" onclick="increaseQty()">+</button>
+                        </div>
+                    </div>
+            <input type="hidden" name="id_session" value="">
+            <input type="hidden" name="id_produk" value="">
+            <input type="hidden" name="nama_produk" value="">
+            <input type="hidden" name="harga_produk" value="">
+            <input type="hidden" name="qty_produk" value="">
+            <div class="d-flex gap-3">
             <input type="submit" value="Tambah ke Keranjang" name="keranjang" class=" btn btn-warning px-3 py-1">
             <input type="submit" value="Checkout" name="checkout" class=" btn btn-primary px-3 py-1">
+        </div>
             </form>
         </div>
         </div>
@@ -36,3 +55,16 @@ $data = mysqli_fetch_all($query, MYSQLI_ASSOC);
     <?php endif ;?>
     </div>
 </div>
+<script>
+        function increaseQty() {
+            let qtyInput = document.getElementById('qty');
+            qtyInput.value = parseInt(qtyInput.value) + 1;
+        }
+
+        function decreaseQty() {
+            let qtyInput = document.getElementById('qty');
+            if (qtyInput.value > 1) {
+                qtyInput.value = parseInt(qtyInput.value) - 1;
+            }
+        }
+    </script>
