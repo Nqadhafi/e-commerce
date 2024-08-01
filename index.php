@@ -17,15 +17,14 @@ $data = mysqli_fetch_all($query, MYSQLI_ASSOC);
             <?php foreach ($data as $data) : ?>
                 <!-- Produk -->
                 <div class="col-md-4 d-flex justify-content-center mb-4">
-                    <a href="./product.php?id=<?php echo $data['id_produk'] ?>" class="text-decoration-none">
                     <div class="card border-secondary border" style="width: 15rem;">
                         <img src="./assets/uploads/<?php echo $data['gambar_produk'] ?>" class="card-img-top p-2" alt="...">
                         <div class="card-body border-top border-secondary">
                             <h5 class="card-title"><?php echo $data['nama_produk']?></h5>
                             <p class="card-text harga">Rp.<?php echo $data['harga_produk']?></p>
+                            <a href="./product.php?id=<?php echo $data['id_produk'] ?>" class="btn btn-primary text-decoration-none mt-1">Detail Produk</a>
                         </div>
                     </div>
-                    </a>
                 </div>
                 <!-- Produk End -->
                 <?php endforeach; ?>

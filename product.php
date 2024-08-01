@@ -24,6 +24,10 @@ $data = mysqli_fetch_all($query, MYSQLI_ASSOC);
             <hr>
             <p class="card-text fw-semibold">Deskripsi produk :</p>
             <p class="card-text"><?php echo $data[0]['deskripsi_produk'] ?></p>
+            <form action="" method="post" class="d-flex gap-3">
+            <input type="submit" value="Tambah ke Keranjang" name="keranjang" class=" btn btn-warning px-3 py-1">
+            <input type="submit" value="Checkout" name="checkout" class=" btn btn-primary px-3 py-1">
+            </form>
         </div>
         </div>
     </div>
