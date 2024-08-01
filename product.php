@@ -10,7 +10,7 @@ $query = mysqli_query($config, "SELECT * FROM tb_produk WHERE id_produk = '$id'"
 $data = mysqli_fetch_all($query, MYSQLI_ASSOC);
 ?>
 
-<div class="container-fluid">
+<div class="container-fluid bg-light">
     <div class=" p-5">
         <?php if(isset($_GET['id']) &&  !empty($data)) :?>
     <div class="card" style="max-width: 100hw;">

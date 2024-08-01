@@ -4,7 +4,7 @@ $query = mysqli_query($config, "SELECT * FROM tb_produk");
 $data = mysqli_fetch_all($query, MYSQLI_ASSOC);
 
 ?>
-<body class="bg-success">
+<body class="bg-light">
     <div class="container-fluid">
         <!-- Header  -->
         <div class="text-center mt-3">
