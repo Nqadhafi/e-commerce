@@ -8,7 +8,7 @@ if (!isset($_SESSION['id_customer'])){
 
 }
 
-$id_cust = $_SESSION['id_customer'] ?? NULL;
+$id_sesi = $_SESSION['id_customer'] ?? NULL;
 
 $user = "root";
 $pwd = "";

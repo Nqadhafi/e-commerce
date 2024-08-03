@@ -30,6 +30,10 @@ echo $id_cust;
             
             <form action="" method="post">
             <!-- hidden input data -->
+            <input type="hidden" name="id_session" value="<?php echo $id_sesi ;?>">
+            <input type="hidden" name="id_produk" value="<?php echo ''; ?>">
+            <input type="hidden" name="nama_produk" value="<?php echo ''; ?>">
+            <input type="hidden" name="harga_produk" value="<?php echo ''; ?>">
             <div class="mb-3" style="max-width:7rem;">
                         <div class="input-group">
                             <button class="btn btn-outline-secondary" type="button" onclick="decreaseQty()">-</button>
@@ -37,11 +41,6 @@ echo $id_cust;
                             <button class="btn btn-outline-secondary" type="button" onclick="increaseQty()">+</button>
                         </div>
                     </div>
-            <input type="hidden" name="id_session" value="">
-            <input type="hidden" name="id_produk" value="">
-            <input type="hidden" name="nama_produk" value="">
-            <input type="hidden" name="harga_produk" value="">
-            <input type="hidden" name="qty_produk" value="">
             <div class="d-flex gap-3">
             <input type="submit" value="Tambah ke Keranjang" name="keranjang" class=" btn btn-warning px-3 py-1">
             <input type="submit" value="Checkout" name="checkout" class=" btn btn-primary px-3 py-1">

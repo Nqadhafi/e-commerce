@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Aug 01, 2024 at 04:04 AM
+-- Generation Time: Aug 03, 2024 at 06:30 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.0.30
 
@@ -29,7 +29,7 @@ USE `toko_onlineku`;
 --
 
 CREATE TABLE `tb_keranjang` (
-  `id_keranjang` bigint(20) NOT NULL,
+  `id_keranjang` varchar(50) NOT NULL,
   `id_produk` int(11) NOT NULL,
   `qty_keranjang` int(11) NOT NULL,
   `subtotal_keranjang` bigint(20) NOT NULL
@@ -71,9 +71,9 @@ CREATE TABLE `tb_produk` (
 --
 
 INSERT INTO `tb_produk` (`id_produk`, `nama_produk`, `harga_produk`, `deskripsi_produk`, `gambar_produk`) VALUES
-(18, 'Next JS', 24000, 'Ini next js', '66aa49f90a42c.png'),
-(19, 'Kubernetes', 50000, 'Joki kubernetes', '66aa4a0ebfde8.png'),
-(20, 'Orang hitam', 3000, 'Anjay nigga', '66aa4bbb60c10.jpg');
+(19, 'Kubernetes', 50000, 'Joki kubernetes', '66abb15819ea9.jpg'),
+(20, 'Orang hitam', 3000, 'Anjay nigga', '66aa4bbb60c10.jpg'),
+(21, 'Stiker Vinyl', 7500, 'Ini stiker coy', '66aba71a8f2f0.png');
 
 --
 -- Indexes for dumped tables
@@ -107,7 +107,7 @@ ALTER TABLE `tb_produk`
 -- AUTO_INCREMENT for table `tb_produk`
 --
 ALTER TABLE `tb_produk`
-  MODIFY `id_produk` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
+  MODIFY `id_produk` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=22;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
