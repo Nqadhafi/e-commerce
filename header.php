@@ -1,5 +1,13 @@
 <?php
 include('config.php');
+$total_keranjang = 0; // Inisialisasi variabel untuk menyimpan total quantity
+
+if (isset($_SESSION['keranjang'])) {
+    foreach ($_SESSION['keranjang'] as $id => $qty) {
+        $total_keranjang += $qty; // Tambahkan setiap quantity ke total
+    }
+    
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -37,7 +45,7 @@ include('config.php');
                     <!-- Cart -->
                     <li class="nav-item p-1">
                         <a class="nav-link" href="./cart.php" id="cart">
-                            Cart <span class="badge badge-pill bg-danger">0</span>
+                            Cart <span class="badge badge-pill bg-danger"><?php echo $total_keranjang?></span>
                         </a>
                     </li>
                     <!-- Cart end -->

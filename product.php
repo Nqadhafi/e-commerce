@@ -9,7 +9,45 @@ else {
 $query = mysqli_query($config, "SELECT * FROM tb_produk WHERE id_produk = '$id'");
 $data = mysqli_fetch_all($query, MYSQLI_ASSOC);
 
-echo $id_cust;
+if (!empty($data)){
+$gambar_produk =$data[0]['gambar_produk'];
+$nama_produk = $data[0]['nama_produk'];
+$harga_produk = $data[0]['harga_produk'];
+$deskripsi_produk = $data[0]['deskripsi_produk'];
+}
+
+//Logika transaksi checkout/tambah keranjang
+if(isset($_POST['transaksi'])){
+
+    switch($_POST['transaksi']){
+
+    case ('Tambah ke Keranjang'):
+        $qty = $_POST['qty'];
+        
+        if (!isset($_SESSION['keranjang'])) {
+            $_SESSION['keranjang'] = [];
+        }
+    
+        if (isset($_SESSION['keranjang'][$id])) {
+            $_SESSION['keranjang'][$id] += $qty;
+            
+        } else {
+            $_SESSION['keranjang'][$id] = $qty;
+        }
+        echo "<script>
+        alert('Produk berhasil ditambahkan');
+        window.location.href='./product.php?id=" . $id . "';
+    </script>";
+    
+        break;
+
+        case('Checkout'):
+            echo "Uwawww";
+            break;
+
+}
+}
+
 ?>
 
 <div class="container-fluid bg-light">
@@ -18,22 +56,20 @@ echo $id_cust;
     <div class="card" style="max-width: 100hw;">
         <div class="row">
         <div class="col-md-7 text-center front-display">
-        <img src="./assets/uploads/<?php echo $data[0]['gambar_produk'] ?>" class="card-img-top " alt="...">
+        <img src="./assets/uploads/<?php echo $gambar_produk ?>" class="card-img-top " alt="...">
         </div>
         <div class="card-body col-md-5">
-            <h2 class="card-title fw-bolder"><?php echo $data[0]['nama_produk'] ?></h2>
-            <p class="card-text harga fs-4">Rp.<?php echo $data[0]['harga_produk'] ?></p>
+            <h2 class="card-title fw-bolder"><?php echo $nama_produk ?></h2>
+            <p class="card-text harga fs-4">Rp.<?php echo $harga_produk ?></p>
             <hr>
             <p class="card-text fw-semibold">Deskripsi produk :</p>
-            <p class="card-text"><?php echo $data[0]['deskripsi_produk'] ?></p>
+            <p class="card-text"><?php echo $deskripsi_produk ?></p>
             <!-- form -->
             
             <form action="" method="post">
             <!-- hidden input data -->
             <input type="hidden" name="id_session" value="<?php echo $id_sesi ;?>">
-            <input type="hidden" name="id_produk" value="<?php echo ''; ?>">
-            <input type="hidden" name="nama_produk" value="<?php echo ''; ?>">
-            <input type="hidden" name="harga_produk" value="<?php echo ''; ?>">
+            <input type="hidden" name="id_produk" value="<?php echo $id ; ?>">
             <div class="mb-3" style="max-width:7rem;">
                         <div class="input-group">
                             <button class="btn btn-outline-secondary" type="button" onclick="decreaseQty()">-</button>
@@ -42,8 +78,8 @@ echo $id_cust;
                         </div>
                     </div>
             <div class="d-flex gap-3">
-            <input type="submit" value="Tambah ke Keranjang" name="keranjang" class=" btn btn-warning px-3 py-1">
-            <input type="submit" value="Checkout" name="checkout" class=" btn btn-primary px-3 py-1">
+            <input type="submit" value="Tambah ke Keranjang" name="transaksi" class=" btn btn-warning px-3 py-1">
+            <input type="submit" value="Checkout" name="transaksi" class=" btn btn-primary px-3 py-1">
         </div>
             </form>
         </div>
