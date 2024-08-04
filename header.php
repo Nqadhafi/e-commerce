@@ -1,5 +1,5 @@
 <?php
-include('config.php');
+include('./config.php');
 $total_keranjang = 0; // Inisialisasi variabel untuk menyimpan total quantity
 
 if (isset($_SESSION['keranjang'])) {

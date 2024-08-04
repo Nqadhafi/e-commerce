@@ -59,7 +59,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         session_destroy(); // Menghancurkan sesi
 
         // Debug statement
-        echo "Sesi berhasil direset!";
+        $pagar = "%23";
+        $convert_id = $pagar . substr($order_id,1);
+
+        echo "<script> alert('Pesanan Anda Berhasil'); window.location.href='./check.php?orderid=$convert_id'; </script>";
+       
     } else {
         echo "Gagal menyimpan data order.";
     }
