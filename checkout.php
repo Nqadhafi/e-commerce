@@ -72,7 +72,6 @@ include('header.php');
                         </div>
                     </div>
                 </div>
-                <input type="hidden" name="id_keranjang" value="<?php echo $id_sesi; ?>">
                 <input type="hidden" name="subtotal" value="<?php echo $subtotal; ?>">
                 <div class="justify-content-center d-flex mt-5">
                     <button class="btn btn-success" type="submit">Checkout</button>
