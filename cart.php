@@ -16,11 +16,11 @@ include('header.php');
                         <img src="./assets/uploads/<?php echo $show_produk['gambar_produk'] ?>" class="card-img-top " alt="...">
                         <div class="card-body">
                             <p class="card-text"><?php echo $show_produk['nama_produk'] ?></p>
-                            <p class="card-text">Rp.<?php echo $show_produk['harga_produk'] ?></p>
+                            <p class="card-text">Rp.<?php echo number_format($show_produk['harga_produk'], 0, ',', '.') ?></p>
                         </div>
                     </div>
                     <div class="m-3 p-2 mt-5 align-items-center">
-                        <p>Rp. <?php echo $total_produk; ?></p>
+                        <p>Rp. <?php echo number_format($total_produk, 0, ',', '.'); ?></p>
                     </div>
                 </div>
             <?php endforeach; ?>

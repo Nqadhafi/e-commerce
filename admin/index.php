@@ -93,7 +93,7 @@ $data = mysqli_fetch_all($query, MYSQLI_ASSOC);
                         </div>
                     </td>
                     <td><?php echo $data['nama_produk']?></td>
-                    <td>Rp. <?php echo $data['harga_produk']?>,-</td>
+                    <td>Rp. <?php echo number_format($data['harga_produk'], 0, ',', '.')?>,-</td>
                     <td><?php echo $data['deskripsi_produk']?></td>
                     <td>
                         <a href="./?page=update&id=<?php echo $data['id_produk'] ?>" class="btn btn-warning mb-1">Edit</a>

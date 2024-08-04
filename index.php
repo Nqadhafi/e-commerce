@@ -21,7 +21,7 @@ $data = mysqli_fetch_all($query, MYSQLI_ASSOC);
                         <img src="./assets/uploads/<?php echo $data['gambar_produk'] ?>" class="card-img-top p-2" alt="...">
                         <div class="card-body border-top border-secondary">
                             <h5 class="card-title"><?php echo $data['nama_produk']?></h5>
-                            <p class="card-text harga">Rp.<?php echo $data['harga_produk']?></p>
+                            <p class="card-text harga">Rp.<?php echo number_format($data['harga_produk'], 0, ',', '.')?></p>
                             <a href="./product.php?id=<?php echo $data['id_produk'] ?>" class="btn btn-primary text-decoration-none mt-1">Detail Produk</a>
                         </div>
                     </div>
