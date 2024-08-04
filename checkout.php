@@ -15,7 +15,7 @@ include('header.php');
         <div class="container-fluid">
             <h3 class="text-center mt-4"> Checkout</h3>
             <hr>
-            <form action="">
+            <form action="./proses_checkout.php" method="post">
                 <div class="row">
                     <div class="col-lg-6">
                         <h4 class="text-center"> Isi Data Diri Anda</h4>
@@ -67,12 +67,13 @@ include('header.php');
                         </div>
                         <hr>
                         <div class="d-flex justify-content-between m-4">
-                            
                             <h5>Subtotal</h5>
                             <p>Rp.<?php echo number_format($subtotal, 0, ',', '.'); ?></p>
                         </div>
                     </div>
                 </div>
+                <input type="hidden" name="id_keranjang" value="<?php echo $id_sesi; ?>">
+                <input type="hidden" name="subtotal" value="<?php echo $subtotal; ?>">
                 <div class="justify-content-center d-flex mt-5">
                     <button class="btn btn-success" type="submit">Checkout</button>
                 </div>
