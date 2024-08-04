@@ -79,7 +79,7 @@ if(isset($_POST['transaksi'])){
                     </div>
             <div class="d-flex gap-3">
             <input type="submit" value="Tambah ke Keranjang" name="transaksi" class=" btn btn-warning px-3 py-1">
-            <input type="submit" value="Checkout" name="transaksi" class=" btn btn-primary px-3 py-1">
+            <!-- <input type="submit" value="Checkout" name="transaksi" class=" btn btn-primary px-3 py-1"> -->
         </div>
             </form>
         </div>

@@ -63,8 +63,6 @@ if (isset($_POST['update'])) {
     }
 }
 ?>
-<?php 
-?>
 <form method="post" enctype="multipart/form-data">
     <div class="container d-flex flex-column justify-content-center align-self-center align-items-center">
         <div class="mt-3 p-3 border rounded">
