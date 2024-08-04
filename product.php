@@ -72,9 +72,9 @@ if(isset($_POST['transaksi'])){
             <input type="hidden" name="id_produk" value="<?php echo $id ; ?>">
             <div class="mb-3" style="max-width:7rem;">
                         <div class="input-group">
-                            <button class="btn btn-outline-secondary" type="button" onclick="decreaseQty()">-</button>
-                            <input type="number" class="form-control" id="qty" name="qty" value="1" min="1" required>
-                            <button class="btn btn-outline-secondary" type="button" onclick="increaseQty()">+</button>
+                            <button class="btn fw-bolder m-0 p-1 " type="button" onclick="decreaseQty()">-</button>
+                            <input type="number" class="form-control p-0  text-center" id="qty" name="qty" value="1" min="1" required>
+                            <button class="btn fw-bolder m-0 p-1" type="button" onclick="increaseQty()">+</button>
                         </div>
                     </div>
             <div class="d-flex gap-3">
