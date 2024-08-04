@@ -92,12 +92,8 @@ $items = mysqli_fetch_all($query_items, MYSQLI_ASSOC);
                 <div class="invoice-footer">
                     <h4>Terima kasih atas pembelian Anda!</h4>
                 </div>
-                <?php elseif(!$items && !isset($GET_['orderid'])) :     echo ('Tidak ada pesanan') ?>
-                <?php elseif(!isset($GET_['orderid'])) :     echo ('') ?>
-                
-                
-            
-            
+                <?php else :?>    
+                    <h4 class="text-center mt-5">Pesanan Tidak Ditemukan</h4>
             <?php endif; ?>
             </div>
     </div>

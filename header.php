@@ -16,6 +16,8 @@ if (isset($_SESSION['keranjang'])) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="./lib/css/main.css">
     <link rel="stylesheet" href="./lib/css/bootstrap.min.css">
+
+
     
 </head>
 
@@ -44,21 +46,18 @@ if (isset($_SESSION['keranjang'])) {
                     </li>
                     <!-- Cart -->
                     <li class="nav-item p-1">
-                        <a class="nav-link" href="./cart.php" id="cart">
-                            Cart <span class="badge badge-pill bg-danger"><?php echo $total_keranjang?></span>
+                        <a class="nav-link d-flex" href="./cart.php" id="cart">
+                        <div class="icon-cart me-1">
+                        <img src="./assets/img/cart.png" alt="">
+                        </div>
+                            Cart <span class="badge badge-pill bg-danger align-self-center ms-1"><?php echo $total_keranjang?>
+                        </span>
                         </a>
                     </li>
                     <!-- Cart end -->
                 </ul>
                 </div>
-                <!-- Form -->
-                <div>
-                <form class="d-flex" role="search">
-                    <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
-                    <button class="btn btn-success  btn-outline-seccondary" type="submit">Search</button>
-                </form>
-                </div>
-                <!-- form end -->
+
             </div>
             </div>
             <!-- Collapse end -->
