@@ -65,6 +65,7 @@ if (isset($_GET['acc'])) {
     $order_id = filter_input(INPUT_GET, 'hapus', FILTER_SANITIZE_STRING);
     // Proses penghapusan pesanan
     $action = mysqli_query($config, "DELETE FROM tb_order WHERE id_order = '$order_id'");
+    $action2 = mysqli_query($config, "DELETE FROM tb_keranjang WHERE id_keranjang = '$order_id'");
     header('Location: ./?page=check');
 }
 ?>
