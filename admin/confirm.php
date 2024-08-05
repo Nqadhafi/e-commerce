@@ -79,6 +79,7 @@ if (isset($_GET['acc']) || isset($_GET['pending']) || isset($_GET['hapus'])) {
                 foreach ($data as $row) : ?>
                     <tr>
                         <?php
+                        $tanggal_order = date('d-m-Y', strtotime($row['tanggal_order']));
                         $class = "";
                         if ($row['status_order'] == "Selesai") {
                             $class = "text-success fw-bolder";
@@ -92,7 +93,7 @@ if (isset($_GET['acc']) || isset($_GET['pending']) || isset($_GET['hapus'])) {
                         <td><?php echo htmlspecialchars($row['id_order']); ?></td>
                         <td><?php echo htmlspecialchars($row['namacust_order']); ?></td>
                         <td><?php echo htmlspecialchars($row['resi_order']); ?></td>
-                        <td><?php echo htmlspecialchars($row['tanggal_order']); ?></td>
+                        <td><?php echo htmlspecialchars($tanggal_order); ?></td>
                         <td>Rp.<?php echo number_format($row['grandtotal_order'], 0, ',', '.'); ?></td>
                         <td class="<?php echo $class ?>"><?php echo htmlspecialchars($row['status_order']); ?></td>
                         <td>
@@ -110,7 +111,7 @@ if (isset($_GET['acc']) || isset($_GET['pending']) || isset($_GET['hapus'])) {
                 <?php endforeach; ?>
             </tbody>
         </table>
-        <div class="mb-3">
+        <div class="mb-3 text-center">
         <a href="./generate_pdf_all.php?month=<?php echo urlencode($selected_month); ?>" target="_blank"class="btn btn-primary">Cetak Laporan PDF</a>
     </div>
     </div>
