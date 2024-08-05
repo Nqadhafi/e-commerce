@@ -3,9 +3,9 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Aug 05, 2024 at 06:35 AM
--- Server version: 10.4.28-MariaDB
--- PHP Version: 8.2.4
+-- Generation Time: Aug 05, 2024 at 09:21 PM
+-- Server version: 10.4.32-MariaDB
+-- PHP Version: 8.0.30
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -60,8 +60,9 @@ CREATE TABLE `tb_keranjang` (
 --
 
 INSERT INTO `tb_keranjang` (`id`, `id_keranjang`, `id_produk`, `qty_keranjang`, `subtotal_keranjang`) VALUES
-(51, '#66afd3323bee8', 20, 1, 3000),
-(52, '#66b04b659a412', 19, 2, 100000);
+(54, '#66b112a07b219', 21, 1, 7500),
+(55, '#66b11a0ea4437', 19, 4, 200000),
+(56, '#66b11a0ea4437', 20, 8, 24000);
 
 -- --------------------------------------------------------
 
@@ -71,10 +72,12 @@ INSERT INTO `tb_keranjang` (`id`, `id_keranjang`, `id_produk`, `qty_keranjang`, 
 
 CREATE TABLE `tb_order` (
   `id_order` varchar(50) NOT NULL,
+  `resi_order` varchar(50) NOT NULL,
   `namacust_order` varchar(50) NOT NULL,
   `email_order` varchar(50) NOT NULL,
   `nohp_order` bigint(20) NOT NULL,
   `alamat_order` varchar(100) NOT NULL,
+  `tanggal_order` date NOT NULL DEFAULT current_timestamp(),
   `grandtotal_order` bigint(20) NOT NULL,
   `status_order` varchar(30) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
@@ -83,9 +86,9 @@ CREATE TABLE `tb_order` (
 -- Dumping data for table `tb_order`
 --
 
-INSERT INTO `tb_order` (`id_order`, `namacust_order`, `email_order`, `nohp_order`, `alamat_order`, `grandtotal_order`, `status_order`) VALUES
-('#66afd3323bee8', 'asd', '123@asdasd', 123123, 'asdasd', 3000, 'Pending'),
-('#66b04b659a412', 'asdasd@asdasd', 'nandaqadafi@yahoo.co.id', 1123, 'asdasd', 100000, 'Pending');
+INSERT INTO `tb_order` (`id_order`, `resi_order`, `namacust_order`, `email_order`, `nohp_order`, `alamat_order`, `tanggal_order`, `grandtotal_order`, `status_order`) VALUES
+('#66b112a07b219', 'asdasd', 'coba timestamp', 'wlewle@anjay.com', 123123213, 'asdadasd', '2024-08-06', 7500, 'Pending'),
+('#66b11a0ea4437', '', 'Nanda Qadhafi', 'asdasdas@zds', 123123123, '123asdasd', '2024-07-23', 224000, 'Selesai');
 
 -- --------------------------------------------------------
 
@@ -153,7 +156,7 @@ ALTER TABLE `tb_admin`
 -- AUTO_INCREMENT for table `tb_keranjang`
 --
 ALTER TABLE `tb_keranjang`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=53;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=57;
 
 --
 -- AUTO_INCREMENT for table `tb_produk`
