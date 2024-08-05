@@ -41,7 +41,7 @@ $data = mysqli_fetch_all($query, MYSQLI_ASSOC);
                     <td><?php echo htmlspecialchars($row['id_order']); ?></td>
                     <td><?php echo htmlspecialchars($row['namacust_order']); ?></td>
                     <td><?php echo htmlspecialchars($row['resi_order']); ?></td>
-                    <td>tanggal</td>
+                    <td><?php echo htmlspecialchars($row['tanggal_order']); ?></td>
                     <td>Rp.<?php echo number_format($row['grandtotal_order'], 0, ',', '.'); ?></td>
                     <td class="<?php echo $class?>"><?php echo htmlspecialchars($row['status_order']); ?></td>
                     <td>
