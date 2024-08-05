@@ -16,12 +16,6 @@ if ($selected_month) {
 $query = mysqli_query($config, "SELECT * FROM tb_order" . $filter_query);
 $data = mysqli_fetch_all($query, MYSQLI_ASSOC);
 
-// Buat URL untuk mempertahankan parameter query yang ada
-$query_params = array_filter($_GET, function ($key) {
-    return !in_array($key, ['month', 'page']);
-}, ARRAY_FILTER_USE_KEY);
-$base_url = '?page=check&' . http_build_query($query_params);
-
 // Cek aksi dari URL
 if (isset($_GET['acc']) || isset($_GET['pending']) || isset($_GET['hapus'])) {
     $order_id = filter_input(INPUT_GET, 'acc', FILTER_SANITIZE_STRING) 
@@ -38,10 +32,9 @@ if (isset($_GET['acc']) || isset($_GET['pending']) || isset($_GET['hapus'])) {
     }
 
     // Redirect setelah aksi
-    header('Location: ./?page=check' . (isset($_SERVER['QUERY_STRING']) ? '&' . http_build_query(array_diff_key($_GET, array_flip(['acc', 'pending', 'hapus']))) : ''));
+    header('Location: ?page=check');
     exit();
 }
-
 ?>
 
 <div class="container d-flex flex-column justify-content-center">
@@ -49,9 +42,6 @@ if (isset($_GET['acc']) || isset($_GET['pending']) || isset($_GET['hapus'])) {
     <!-- Dropdown filter bulan -->
     <form method="get" class="mb-3">
         <input type="hidden" name="page" value="check">
-        <input type="hidden" name="<?php echo htmlspecialchars(implode('&', array_filter(array_keys($_GET), function ($key) {
-            return !in_array($key, ['month', 'page']);
-        }))); ?>">
         <div class="row">
             <div class="col-md-4 offset-md-4">
                 <div class="input-group">
@@ -106,20 +96,23 @@ if (isset($_GET['acc']) || isset($_GET['pending']) || isset($_GET['hapus'])) {
                         <td>Rp.<?php echo number_format($row['grandtotal_order'], 0, ',', '.'); ?></td>
                         <td class="<?php echo $class ?>"><?php echo htmlspecialchars($row['status_order']); ?></td>
                         <td>
-                            <a href="<?php echo $base_url; ?>&acc=<?php echo urlencode($row['id_order']); ?>" class="btn btn-success mb-1" onclick="return confirm('Anda yakin mengubah status order ini?');">Selesai</a>
+                            <a href="?page=check&acc=<?php echo urlencode($row['id_order']); ?>" class="btn btn-success mb-1" onclick="return confirm('Anda yakin mengubah status order ini?');">Selesai</a>
                             <button type="button" class="btn btn-primary mb-1" data-bs-toggle="modal" data-bs-target="#resiModal" data-id="<?php echo $row['id_order']; ?>">
                                 Pengiriman
                             </button>
-                            <a href="<?php echo $base_url; ?>&pending=<?php echo urlencode($row['id_order']); ?>" class="btn btn-warning mb-1" onclick="return confirm('Anda yakin mengubah status order ini?');">Pending</a>
+                            <a href="?page=check&pending=<?php echo urlencode($row['id_order']); ?>" class="btn btn-warning mb-1" onclick="return confirm('Anda yakin mengubah status order ini?');">Pending</a>
                         </td>
                         <td>
                             <a href="./generate_pdf.php?orderid=<?php echo urlencode($row['id_order']); ?>" target="_blank" class="btn btn-info mb-1">Cetak PDF</a>
-                            <a href="<?php echo $base_url; ?>&hapus=<?php echo urlencode($row['id_order']); ?>" class="btn btn-danger mb-1" onclick="return confirm('Anda yakin menghapus produk ini?');">Hapus</a>
+                            <a href="?page=check&hapus=<?php echo urlencode($row['id_order']); ?>" class="btn btn-danger mb-1" onclick="return confirm('Anda yakin menghapus produk ini?');">Hapus</a>
                         </td>
                     </tr>
                 <?php endforeach; ?>
             </tbody>
         </table>
+        <div class="mb-3">
+        <a href="./generate_pdf_all.php?month=<?php echo urlencode($selected_month); ?>" target="_blank"class="btn btn-primary">Cetak Laporan PDF</a>
+    </div>
     </div>
 </div>
 
@@ -154,7 +147,7 @@ if (isset($_POST['submitResi'])) {
     $order_id = mysqli_real_escape_string($config, filter_input(INPUT_POST, 'order_id', FILTER_SANITIZE_STRING));
     $resi = mysqli_real_escape_string($config, filter_input(INPUT_POST, 'resi', FILTER_SANITIZE_STRING));
     $action = mysqli_query($config, "UPDATE tb_order SET status_order ='Pengiriman', resi_order='$resi' WHERE id_order = '$order_id'");
-    header('Location: ./?page=check');
+    header('Location: ?page=check');
     exit();
 }
 ?>
