@@ -47,6 +47,9 @@ $items = mysqli_fetch_all($query_items, MYSQLI_ASSOC);
                     else if($order['status_order'] == "Pending"){
                         $class = "text-warning fw-bolder";
                     }
+                    else if($order['status_order'] == "Pengiriman"){
+                        $class = "text-primary fw-bolder";
+                    }
                     ?>
             <div class="invoice-container">
                 <div class="invoice-header">
@@ -55,6 +58,7 @@ $items = mysqli_fetch_all($query_items, MYSQLI_ASSOC);
                 <div class="container-fluid d-flex justify-content-center align-items-center">
         <div class="invoice-details row ms-5">
             <p class="col-md-6"><strong>Order ID:</strong> <?php echo htmlspecialchars($order['id_order']); ?></p>
+            <p class="col-md-6"><strong>Nomor Resi:</strong> <?php echo htmlspecialchars($order['resi_order']); ?></p>
             <p class="col-md-6"><strong>Nama Customer:</strong> <?php echo htmlspecialchars($order['namacust_order']); ?></p>
             <p class="col-md-6"><strong>Email:</strong> <?php echo htmlspecialchars($order['email_order']); ?></p>
             <p class="col-md-6"><strong>No. HP:</strong> <?php echo htmlspecialchars($order['nohp_order']); ?></p>
