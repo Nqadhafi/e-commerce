@@ -3,9 +3,11 @@ include('../config.php');
 $query = mysqli_query($config, "SELECT * FROM tb_produk");
 
 $data = mysqli_fetch_all($query, MYSQLI_ASSOC);
-
+if(!isset($_SESSION['admin_id']) && !isset($_SESSION['admin_username'])){
+    header("Location: ./login.php");
+}
 ?>
-<!DOCTYPE html>
+<!DOCTYPE html> 
 <html lang="en">
 
 <head>
@@ -42,7 +44,7 @@ $data = mysqli_fetch_all($query, MYSQLI_ASSOC);
                                 <a class="nav-link" href="?page=check">Cek Status Pesanan</a>
                             </li>
                             <li class="nav-item p-1">
-                                <a class="nav-link" href="../">Logout</a>
+                                <a class="nav-link" href="./logout.php" onclick="return confirm('Apakah anda yakin logout?');">Logout</a>
                             </li>
                         </ul>
                     </div>
