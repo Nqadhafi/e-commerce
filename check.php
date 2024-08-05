@@ -17,6 +17,12 @@ $query_items = mysqli_query($config, "SELECT p.nama_produk, p.harga_produk, k.qt
 
 // Ambil data produk dalam pesanan
 $items = mysqli_fetch_all($query_items, MYSQLI_ASSOC);
+
+// Format tanggal menjadi dd-mm-yyyy
+if ($order) {
+    $date = new DateTime($order['tanggal_order']); // Membuat objek DateTime
+    $formatted_date = $date->format('d-m-Y'); // Format tanggal
+}
 ?>
 
 <!DOCTYPE html>
@@ -50,12 +56,13 @@ $items = mysqli_fetch_all($query_items, MYSQLI_ASSOC);
                 <div class="container-fluid d-flex justify-content-center align-items-center">
                     <div class="invoice-details row ms-5">
                         <p class="col-md-6"><strong>Order ID:</strong> <?php echo htmlspecialchars($order['id_order']); ?></p>
+                        <p class="col-md-6"><strong>Tanggal Transaksi:</strong> <?php echo htmlspecialchars($formatted_date); ?></p>
                         <p class="col-md-6"><strong>Nomor Resi:</strong> <?php echo htmlspecialchars($order['resi_order']); ?></p>
                         <p class="col-md-6"><strong>Nama Customer:</strong> <?php echo htmlspecialchars($order['namacust_order']); ?></p>
                         <p class="col-md-6"><strong>Email:</strong> <?php echo htmlspecialchars($order['email_order']); ?></p>
                         <p class="col-md-6"><strong>No. HP:</strong> <?php echo htmlspecialchars($order['nohp_order']); ?></p>
                         <p class="col-md-6"><strong>Alamat:</strong> <?php echo htmlspecialchars($order['alamat_order']); ?></p>
-                        <p class="col-md-6 "><strong>Status:</strong> <span class="<?php echo $class?>"><?php echo htmlspecialchars($order['status_order']); ?></span></p>
+                        <p class="col-md-6"><strong>Status:</strong> <span class="<?php echo $class?>"><?php echo htmlspecialchars($order['status_order']); ?></span></p>
                     </div>
                 </div>
                 <div class="invoice-items">

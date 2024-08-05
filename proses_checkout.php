@@ -15,7 +15,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $alamat = filter_input(INPUT_POST, 'alamat', FILTER_SANITIZE_STRING);
     $subtotal = filter_input(INPUT_POST, 'subtotal', FILTER_SANITIZE_STRING);
 
-    // Masukkan data ke tabel tb_order
+    // Masukkan data ke tabel tb_order dengan waktu sekarang
     $order = mysqli_query($config, "INSERT INTO `tb_order` (
         id_order,
         namacust_order,
@@ -23,7 +23,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         nohp_order,
         alamat_order,
         grandtotal_order,
-        status_order
+        status_order,
+        tanggal_order -- Menambahkan kolom untuk menyimpan tanggal
     ) VALUES (
         '$order_id',
         '$nama',
@@ -31,7 +32,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         '$nohp',
         '$alamat',
         '$subtotal',
-        'Pending'
+        'Pending',
+        NOW() -- Menyimpan waktu saat ini ke kolom tanggal_order
     )");
 
     if ($order) {

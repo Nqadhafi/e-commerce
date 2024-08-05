@@ -21,6 +21,10 @@ $query_items = mysqli_query($config, "SELECT p.nama_produk, p.harga_produk, k.qt
 // Ambil data produk dalam pesanan
 $items = mysqli_fetch_all($query_items, MYSQLI_ASSOC);
 
+// Format tanggal menjadi dd-mm-yyyy
+$date = new DateTime($order['tanggal_order']); // Membuat objek DateTime
+$formatted_date = $date->format('d-m-Y'); // Format tanggal
+
 $html = '
 <!DOCTYPE html>
 <html lang="en">
@@ -40,21 +44,36 @@ $html = '
         .table th, .table td { padding: 8px; text-align: left; }
         .thead-light { background-color: #f2f2f2; }
         .invoice-footer { margin-top: 3rem; }
+        .row { display: flex; flex-wrap: wrap; margin: 0 -15px; }
+        .col { padding: 0 15px; flex: 1; }
+        .col-6 { width: 50%; }
+        .invoice-details p { margin: 0; padding: 5px 0; }
+        .invoice-details p strong { width: 200px; display: inline-block; }
     </style>
 </head>
 <body>
     <div class="container">
+    <div class="text-center mt-5">
+            <h1>- Toko Onlineku -</h1>
+        </div>
         <div class="text-center mt-5">
             <h2>Detail Pesanan</h2>
         </div>
         <div class="invoice-details">
-            <p><strong>Order ID:</strong> ' . htmlspecialchars($order['id_order']) . '</p>
-            <p><strong>Nomor Resi:</strong> ' . htmlspecialchars($order['resi_order']) . '</p>
-            <p><strong>Nama Customer:</strong> ' . htmlspecialchars($order['namacust_order']) . '</p>
-            <p><strong>Email:</strong> ' . htmlspecialchars($order['email_order']) . '</p>
-            <p><strong>No. HP:</strong> ' . htmlspecialchars($order['nohp_order']) . '</p>
-            <p><strong>Alamat:</strong> ' . htmlspecialchars($order['alamat_order']) . '</p>
-            <p><strong>Status:</strong> ' . htmlspecialchars($order['status_order']) . '</p>
+            <div class="row">
+                <div class="col col-6">
+                    <p><strong>Order ID</strong>: ' . htmlspecialchars($order['id_order']) . '</p>
+                    <p><strong>Tanggal Transaksi</strong>: ' . htmlspecialchars($formatted_date) . '</p>
+                    <p><strong>Nomor Resi</strong>: ' . htmlspecialchars($order['resi_order']) . '</p>
+                </div>
+                <div class="col col-6">
+                    <p><strong>Nama Customer:</strong>: ' . htmlspecialchars($order['namacust_order']) . '</p>
+                    <p><strong>Email</strong>: ' . htmlspecialchars($order['email_order']) . '</p>
+                    <p><strong>No. HP</strong>: ' . htmlspecialchars($order['nohp_order']) . '</p>
+                    <p><strong>Alamat</strong>: ' . htmlspecialchars($order['alamat_order']) . '</p>
+                    <p><strong>Status</strong>: ' . htmlspecialchars($order['status_order']) . '</p>
+                </div>
+            </div>
         </div>
         <div class="invoice-items">
             <h4>Daftar Pesanan</h4>
