@@ -40,7 +40,14 @@ $items = mysqli_fetch_all($query_items, MYSQLI_ASSOC);
             <button class="btn btn-success btn-outline-seccondary w-25" type="submit">Cari Order</button>
         </form>
         <?php if ($order) : ?>
-
+            <?php 
+                    if($order['status_order'] == "Selesai"){
+                        $class = "text-success fw-bolder";
+                    }
+                    else if($order['status_order'] == "Pending"){
+                        $class = "text-warning fw-bolder";
+                    }
+                    ?>
             <div class="invoice-container">
                 <div class="invoice-header">
                     <h2 class="text-center">Detail Pesanan</h2>
@@ -52,7 +59,7 @@ $items = mysqli_fetch_all($query_items, MYSQLI_ASSOC);
             <p class="col-md-6"><strong>Email:</strong> <?php echo htmlspecialchars($order['email_order']); ?></p>
             <p class="col-md-6"><strong>No. HP:</strong> <?php echo htmlspecialchars($order['nohp_order']); ?></p>
             <p class="col-md-6"><strong>Alamat:</strong> <?php echo htmlspecialchars($order['alamat_order']); ?></p>
-            <p class="col-md-6"><strong>Status:</strong> <?php echo htmlspecialchars($order['status_order']); ?></p>
+            <p class="col-md-6 "><strong>Status:</strong> <span class="<?php echo $class?>"><?php echo htmlspecialchars($order['status_order']); ?></span></p>
         </div>
     </div>
                 <div class="invoice-items">
@@ -97,7 +104,7 @@ $items = mysqli_fetch_all($query_items, MYSQLI_ASSOC);
                     $whatsapp = "https://wa.me/". $no_whatsapp ."?text=Halo%20min!%20Tolong%20cek%20pesanan%20dengan%20order%20ID%20%23". $id_order_wa ."%20ya!";
                     ?> 
                     <div class="text-center">
-                    <a href="<?php echo $whatsapp ?>" class="btn btn-success">Chat Admin via Whatsapp!</a>
+                    <a href="<?php echo $whatsapp ?>" class="btn btn-success" target="_blank">Chat Admin via Whatsapp!</a>
                     </div>
                   
                 </div>

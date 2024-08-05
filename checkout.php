@@ -73,8 +73,9 @@ include('header.php');
                     </div>
                 </div>
                 <input type="hidden" name="subtotal" value="<?php echo $subtotal; ?>">
-                <div class="justify-content-center d-flex mt-5">
-                    <button class="btn btn-success" type="submit">Checkout</button>
+                <div class="justify-content-center d-flex mt-5 gap-3">
+                    <button class="btn btn-success" type="submit" onclick="return confirm('Apakah anda yakin ingin melakukan transaksi?');">Checkout</button>
+                    <a href="./cart.php" class="btn btn-secondary">Kembali ke Keranjang</a>
                 </div>
             </form>
         <?php endif; ?>
