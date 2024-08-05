@@ -9,15 +9,11 @@ $query = mysqli_query($config, "SELECT * FROM tb_order WHERE id_order = '$order_
 // Ambil data order
 $order = mysqli_fetch_assoc($query);
 
-// Jika tidak ada data pesanan, tampilkan pesan error
-
-
 // Query untuk mendapatkan detail produk dalam pesanan
 $query_items = mysqli_query($config, "SELECT p.nama_produk, p.harga_produk, k.qty_keranjang 
                                       FROM tb_keranjang k
                                       JOIN tb_produk p ON k.id_produk = p.id_produk
                                       WHERE k.id_keranjang = '$order_id'");
-
 
 // Ambil data produk dalam pesanan
 $items = mysqli_fetch_all($query_items, MYSQLI_ASSOC);
@@ -25,47 +21,43 @@ $items = mysqli_fetch_all($query_items, MYSQLI_ASSOC);
 
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Detail Pesanan</title>
 </head>
-
 <body>
     <div class="container">
-    <h2 class="text-center mt-5">Cari Pesanan</h2>
-        <form class="d-flex w-75  mx-auto" role="search" method="get">
+        <h2 class="text-center mt-5">Cari Pesanan</h2>
+        <form class="d-flex w-75 mx-auto" role="search" method="get">
             <input class="form-control me-2" type="search" placeholder="Masukan Order ID. Contoh #12345" aria-label="Search" name="orderid">
-            <button class="btn btn-success btn-outline-seccondary w-25" type="submit">Cari Order</button>
+            <button class="btn btn-success btn-outline-secondary text-white w-25" type="submit">Cari Order</button>
         </form>
         <?php if ($order) : ?>
-            <?php 
-                    if($order['status_order'] == "Selesai"){
-                        $class = "text-success fw-bolder";
-                    }
-                    else if($order['status_order'] == "Pending"){
-                        $class = "text-warning fw-bolder";
-                    }
-                    else if($order['status_order'] == "Pengiriman"){
-                        $class = "text-primary fw-bolder";
-                    }
-                    ?>
+            <?php
+            if ($order['status_order'] == "Selesai") {
+                $class = "text-success fw-bolder";
+            } elseif ($order['status_order'] == "Pending") {
+                $class = "text-warning fw-bolder";
+            } elseif ($order['status_order'] == "Pengiriman") {
+                $class = "text-primary fw-bolder";
+            }
+            ?>
             <div class="invoice-container">
                 <div class="invoice-header">
                     <h2 class="text-center">Detail Pesanan</h2>
                 </div>
                 <div class="container-fluid d-flex justify-content-center align-items-center">
-        <div class="invoice-details row ms-5">
-            <p class="col-md-6"><strong>Order ID:</strong> <?php echo htmlspecialchars($order['id_order']); ?></p>
-            <p class="col-md-6"><strong>Nomor Resi:</strong> <?php echo htmlspecialchars($order['resi_order']); ?></p>
-            <p class="col-md-6"><strong>Nama Customer:</strong> <?php echo htmlspecialchars($order['namacust_order']); ?></p>
-            <p class="col-md-6"><strong>Email:</strong> <?php echo htmlspecialchars($order['email_order']); ?></p>
-            <p class="col-md-6"><strong>No. HP:</strong> <?php echo htmlspecialchars($order['nohp_order']); ?></p>
-            <p class="col-md-6"><strong>Alamat:</strong> <?php echo htmlspecialchars($order['alamat_order']); ?></p>
-            <p class="col-md-6 "><strong>Status:</strong> <span class="<?php echo $class?>"><?php echo htmlspecialchars($order['status_order']); ?></span></p>
-        </div>
-    </div>
+                    <div class="invoice-details row ms-5">
+                        <p class="col-md-6"><strong>Order ID:</strong> <?php echo htmlspecialchars($order['id_order']); ?></p>
+                        <p class="col-md-6"><strong>Nomor Resi:</strong> <?php echo htmlspecialchars($order['resi_order']); ?></p>
+                        <p class="col-md-6"><strong>Nama Customer:</strong> <?php echo htmlspecialchars($order['namacust_order']); ?></p>
+                        <p class="col-md-6"><strong>Email:</strong> <?php echo htmlspecialchars($order['email_order']); ?></p>
+                        <p class="col-md-6"><strong>No. HP:</strong> <?php echo htmlspecialchars($order['nohp_order']); ?></p>
+                        <p class="col-md-6"><strong>Alamat:</strong> <?php echo htmlspecialchars($order['alamat_order']); ?></p>
+                        <p class="col-md-6 "><strong>Status:</strong> <span class="<?php echo $class?>"><?php echo htmlspecialchars($order['status_order']); ?></span></p>
+                    </div>
+                </div>
                 <div class="invoice-items">
                     <h4>Daftar Pesanan</h4>
                     <table class="table table-bordered">
@@ -96,27 +88,26 @@ $items = mysqli_fetch_all($query_items, MYSQLI_ASSOC);
                                 <td class="fw-bolder">Rp.<?php echo number_format($grandtotal, 0, ',', '.'); ?></td>
                             </tr>
                         </tbody>
-
                     </table>
                 </div>
-
                 <div class="invoice-footer text-center">
                     <h4 class="mb-3">Terima kasih atas pembelian Anda!</h4>
-                    <?php 
-                    $id_order_wa = substr($order['id_order'],1);
-                    
+                    <?php
+                    $id_order_wa = substr($order['id_order'], 1);
                     $whatsapp = "https://wa.me/". $no_whatsapp ."?text=Halo%20min!%20Tolong%20cek%20pesanan%20dengan%20order%20ID%20%23". $id_order_wa ."%20ya!";
-                    ?> 
+                    ?>
+                    <div class="d-flex justify-content-center gap-3">
                     <div class="text-center">
-                    <a href="<?php echo $whatsapp ?>" class="btn btn-success" target="_blank">Chat Admin via Whatsapp!</a>
+                        <a href="<?php echo $whatsapp ?>" class="btn btn-success" target="_blank">Chat Admin via Whatsapp!</a>
                     </div>
-                  
+                    <div class="text-center ">
+                        <a href="cetak_pdf.php?orderid=<?php echo urlencode($order_id); ?>" class="btn btn-primary" target="_blank">Cetak Invoice</a>
+                    </div>
                 </div>
-                <?php else :?>    
-                    <h4 class="text-center mt-5">Pesanan Tidak Ditemukan</h4>
-            <?php endif; ?>
             </div>
+        <?php else : ?>    
+            <h4 class="text-center mt-5">Pesanan Tidak Ditemukan</h4>
+        <?php endif; ?>
     </div>
 </body>
-
 </html>
