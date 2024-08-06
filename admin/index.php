@@ -44,6 +44,9 @@ if(!isset($_SESSION['admin_id']) && !isset($_SESSION['admin_username'])){
                                 <a class="nav-link" href="?page=check">Cek Status Pesanan</a>
                             </li>
                             <li class="nav-item p-1">
+                                <a class="nav-link" href="?page=ongkir">Set Ongkir</a>
+                            </li>
+                            <li class="nav-item p-1">
                                 <a class="nav-link" href="./logout.php" onclick="return confirm('Apakah anda yakin logout?');">Logout</a>
                             </li>
                         </ul>
@@ -65,6 +68,10 @@ if(!isset($_SESSION['admin_id']) && !isset($_SESSION['admin_username'])){
         }
         else if ($_GET['page'] == 'update') {
             include './update.php';
+            exit();
+        }
+        else if ($_GET['page'] == 'ongkir') {
+            include './set_ongkir.php';
             exit();
         }
     }
