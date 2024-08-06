@@ -24,7 +24,7 @@ $data = mysqli_fetch_all($query, MYSQLI_ASSOC);
 // Hitung grandtotal
 $grandtotal = 0;
 foreach ($data as $row) {
-    $grandtotal += $row['grandtotal_order'];
+    $grandtotal += $row['after_ongkir_order'];
 }
 
 // Inisialisasi dompdf
