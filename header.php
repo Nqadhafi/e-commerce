@@ -27,12 +27,15 @@ if (isset($_SESSION['keranjang'])) {
         <div class="container-fluid d-flex flex-column">
             <div class="d-flex flex-row justify-content-between">
             <a class="navbar-brand" href="./">
-                <h1>Toko Onlineku</h1>
+                <h1 class="text-center"><?php echo $nama_toko ?></h1>
             </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
+           
             </div>
+            <marquee behavior="" direction=""><p><?php echo $deskripsi_toko?></p></marquee>
+            <p class="fs-6 text-center"><i><b>Alamat : </b><?php echo $alamat_toko ?> |<b> Whatsapp Admin :</b> <?php echo $no_whatsapp?></i></p>
             <!-- collapse -->
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
                 <div class="d-flex flex-column">
@@ -44,6 +47,7 @@ if (isset($_SESSION['keranjang'])) {
                     <li class="nav-item p-1">
                         <a class="nav-link" href="check.php">Check Status</a>
                     </li>
+                    
                     <!-- Cart -->
                     <li class="nav-item p-1">
                         <a class="nav-link d-flex" href="./cart.php" id="cart">
