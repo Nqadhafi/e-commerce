@@ -9,12 +9,18 @@ include('./config.php');
 $order_id = "#" . uniqid();
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    
     $nama = filter_input(INPUT_POST, 'nama_lengkap', FILTER_SANITIZE_STRING);
     $email = filter_input(INPUT_POST, 'email', FILTER_SANITIZE_EMAIL);
     $nohp = filter_input(INPUT_POST, 'nomor_handphone', FILTER_SANITIZE_STRING);
     $alamat = filter_input(INPUT_POST, 'alamat', FILTER_SANITIZE_STRING);
     $subtotal = filter_input(INPUT_POST, 'subtotal', FILTER_SANITIZE_STRING);
+    $provinsi = filter_input(INPUT_POST, 'provinsi', FILTER_SANITIZE_STRING);
 
+    $ongkir = mysqli_query($config,"SELECT * FROM tb_ongkir WHERE id_ongkir = '$provinsi'");
+    $juml = mysqli_fetch_all($ongkir, MYSQLI_ASSOC);
+    $biaya_ongkir = $juml[0]['jumlah_ongkir'];
+    $after_ongkir = $biaya_ongkir+$subtotal;
     // Masukkan data ke tabel tb_order dengan waktu sekarang
     $order = mysqli_query($config, "INSERT INTO `tb_order` (
         id_order,
@@ -23,7 +29,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         nohp_order,
         alamat_order,
         grandtotal_order,
+        after_ongkir_order,
         status_order,
+        id_ongkir,
         tanggal_order -- Menambahkan kolom untuk menyimpan tanggal
     ) VALUES (
         '$order_id',
@@ -32,7 +40,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         '$nohp',
         '$alamat',
         '$subtotal',
+        '$after_ongkir',
         'Pending',
+        '$provinsi',
         NOW() -- Menyimpan waktu saat ini ke kolom tanggal_order
     )");
 

@@ -65,6 +65,7 @@ if (isset($_GET['acc']) || isset($_GET['pending']) || isset($_GET['hapus'])) {
                     <th>No.</th>
                     <th>Order ID</th>
                     <th>Nama Customer</th>
+                    <th>No. Hp</th>
                     <th>Nomor Resi</th>
                     <th>Tanggal Order</th>
                     <th>Grand Total</th>
@@ -92,9 +93,10 @@ if (isset($_GET['acc']) || isset($_GET['pending']) || isset($_GET['hapus'])) {
                         <td><?php echo $no++ . "."; ?></td>
                         <td><?php echo htmlspecialchars($row['id_order']); ?></td>
                         <td><?php echo htmlspecialchars($row['namacust_order']); ?></td>
+                        <td><?php echo htmlspecialchars($row['nohp_order']); ?></td>
                         <td><?php echo htmlspecialchars($row['resi_order']); ?></td>
                         <td><?php echo htmlspecialchars($tanggal_order); ?></td>
-                        <td>Rp.<?php echo number_format($row['grandtotal_order'], 0, ',', '.'); ?></td>
+                        <td>Rp.<?php echo number_format($row['after_ongkir_order'], 0, ',', '.'); ?></td>
                         <td class="<?php echo $class ?>"><?php echo htmlspecialchars($row['status_order']); ?></td>
                         <td>
                             <a href="?page=check&acc=<?php echo urlencode($row['id_order']); ?>" class="btn btn-success mb-1" onclick="return confirm('Anda yakin mengubah status order ini?');">Selesai</a>

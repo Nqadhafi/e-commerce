@@ -1,5 +1,6 @@
 <?php
 include('header.php');
+include('./config.php'); // Pastikan config.php terinclude untuk koneksi database
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -36,6 +37,23 @@ include('header.php');
                                 <label for="alamat">Alamat Lengkap :</label>
                                 <textarea class="form-control" name="alamat" id=""></textarea>
                             </div>
+                            <div class="col-6 d-flex flex-column mb-3">
+                                <label for="provinsi">Provinsi :</label>
+                                <select class="form-control" name="provinsi" required>
+                                    <option value="">Pilih Provinsi</option>
+                                    <?php
+                                    // Query untuk mendapatkan data provinsi dari tb_ongkir
+                                    $provinsi_query = mysqli_query($config, "SELECT * FROM tb_ongkir");
+                                    if ($provinsi_query) {
+                                        while ($row = mysqli_fetch_assoc($provinsi_query)) {
+                                            echo '<option value="' . htmlspecialchars($row['id_ongkir']) . '">' . htmlspecialchars($row['provinsi_ongkir']) . '</option>';
+                                        }
+                                    } else {
+                                        echo '<option value="">Tidak ada provinsi tersedia</option>';
+                                    }
+                                    ?>
+                                </select>
+                            </div>
                         </div>
                     </div>
 
@@ -69,6 +87,9 @@ include('header.php');
                         <div class="d-flex justify-content-between m-4">
                             <h5>Subtotal</h5>
                             <p>Rp.<?php echo number_format($subtotal, 0, ',', '.'); ?></p>
+                        </div>
+                        <div>
+                            <p><i>*Harga di atas belum termasuk ongkos kirim, hubungi admin untuk informasi lebih lanjut</i></p>
                         </div>
                     </div>
                 </div>

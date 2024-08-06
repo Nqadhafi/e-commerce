@@ -14,6 +14,11 @@ if ($selected_month) {
     $filter_query = " WHERE DATE_FORMAT(tanggal_order, '%Y-%m') = '" . mysqli_real_escape_string($config, $selected_month) . "'";
 }
 $query = mysqli_query($config, "SELECT * FROM tb_order" . $filter_query);
+
+if (!$query) {
+    die('Query Error: ' . mysqli_error($config));
+}
+
 $data = mysqli_fetch_all($query, MYSQLI_ASSOC);
 
 // Hitung grandtotal
@@ -42,11 +47,14 @@ $html = '<!DOCTYPE html>
     <meta charset="utf-8">
     <title>' . $title . '</title>
     <style>
-        body { font-family: Arial, sans-serif; }
-        table { width: 100%; border-collapse: collapse; }
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
         table, th, td { border: 1px solid black; }
         th, td { padding: 8px; text-align: left; }
         th { background-color: #f2f2f2; }
+        .text-right { text-align: right; }
+        .text-left { text-align: left; }
+        .font-weight-bold { font-weight: bold; }
     </style>
 </head>
 <body>
@@ -58,9 +66,10 @@ $html = '<!DOCTYPE html>
                 <th>No.</th>
                 <th>Order ID</th>
                 <th>Nama Customer</th>
+                <th>No HP</th>
                 <th>Nomor Resi</th>
                 <th>Tanggal Order</th>
-                <th>Sub Total</th>
+                <th>Sub Total + Ongkir</th>
                 <th>Status</th>
             </tr>
         </thead>
@@ -73,17 +82,18 @@ foreach ($data as $row) {
                 <td>' . $no++ . '</td>
                 <td>' . htmlspecialchars($row['id_order']) . '</td>
                 <td>' . htmlspecialchars($row['namacust_order']) . '</td>
+                <td>' . htmlspecialchars($row['nohp_order']) . '</td>
                 <td>' . htmlspecialchars($row['resi_order']) . '</td>
                 <td>' . $tanggal_order . '</td>
-                <td>Rp.' . number_format($row['grandtotal_order'], 0, ',', '.') . '</td>
+                <td>Rp.' . number_format($row['after_ongkir_order'], 0, ',', '.') . '</td>
                 <td>' . htmlspecialchars($row['status_order']) . '</td>
               </tr>';
 }
 
 $html .= '   
 <tr>
-    <td colspan="5" style="text-align: right;"><strong>Total Transaksi</strong></td>
-    <td colspan="2"><strong>Rp.' . number_format($grandtotal, 0, ',', '.') . '</strong></td>
+    <td colspan="6" class="text-right font-weight-bold">Total Transaksi</td>
+    <td colspan="2" class="font-weight-bold text-right">Rp.' . number_format($grandtotal, 0, ',', '.') . '</td>
 </tr>
 </tbody>
     </table>
