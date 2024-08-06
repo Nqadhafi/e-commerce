@@ -20,7 +20,7 @@ if ($order_id) {
 
     // Ambil data produk dalam pesanan
     $items = mysqli_fetch_all($query_items, MYSQLI_ASSOC);
-
+    $tanggal_order = date('d-m-Y', strtotime($order['tanggal_order']));
     $html = '
     <!DOCTYPE html>
     <html lang="en">
@@ -47,17 +47,19 @@ if ($order_id) {
     <body>
         <div class="container">
             <div class="text-center mt-5">
-                <h2>Detail Pesanan</h2>
+                <h2>Detail Pesanan ' .htmlspecialchars($order['id_order']) . '</h2>
             </div>
             <div class="row mt-3">
                 <div class="col">
-                    <p><strong>Order ID:</strong> ' . htmlspecialchars($order['id_order']) . '</p>
-                    <p><strong>Nomor Resi:</strong> ' . htmlspecialchars($order['resi_order']) . '</p>
-                    <p><strong>Nama Customer:</strong> ' . htmlspecialchars($order['namacust_order']) . '</p>
-                    <p><strong>Email:</strong> ' . htmlspecialchars($order['email_order']) . '</p>
-                    <p><strong>No. HP:</strong> ' . htmlspecialchars($order['nohp_order']) . '</p>
-                    <p><strong>Alamat:</strong> ' . htmlspecialchars($order['alamat_order']) . '</p>
-                    <p><strong>Status:</strong> ' . htmlspecialchars($order['status_order']) . '</p>
+                
+                    <p><strong>Order ID</strong>: ' . htmlspecialchars($order['id_order']) . '</p>
+                    <p><strong>Tanggal Order</strong>: ' . htmlspecialchars($tanggal_order) . '</p>
+                    <p><strong>Nomor Resi</strong>: ' . htmlspecialchars($order['resi_order']) . '</p>
+                    <p><strong>Nama Customer</strong>: ' . htmlspecialchars($order['namacust_order']) . '</p>
+                    <p><strong>Email</strong>: ' . htmlspecialchars($order['email_order']) . '</p>
+                    <p><strong>No. HP</strong>: ' . htmlspecialchars($order['nohp_order']) . '</p>
+                    <p><strong>Alamat</strong>: ' . htmlspecialchars($order['alamat_order']) . '</p>
+                    <p><strong>Status</strong>: ' . htmlspecialchars($order['status_order']) . '</p>
                 </div>
             </div>
             <div class="mt-5">
@@ -97,7 +99,7 @@ if ($order_id) {
                 </table>
             </div>
             <div class="invoice-footer text-center">
-                <h4 class="mb-3">Terima kasih atas pembelian Anda!</h4>
+                <h4 class="mb-3">- End of Document-</h4>
             </div>
         </div>
     </body>
