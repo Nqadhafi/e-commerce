@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Aug 05, 2024 at 09:21 PM
+-- Generation Time: Aug 06, 2024 at 05:00 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.0.30
 
@@ -62,7 +62,69 @@ CREATE TABLE `tb_keranjang` (
 INSERT INTO `tb_keranjang` (`id`, `id_keranjang`, `id_produk`, `qty_keranjang`, `subtotal_keranjang`) VALUES
 (54, '#66b112a07b219', 21, 1, 7500),
 (55, '#66b11a0ea4437', 19, 4, 200000),
-(56, '#66b11a0ea4437', 20, 8, 24000);
+(56, '#66b11a0ea4437', 20, 8, 24000),
+(57, '#66b228b9b3dad', 20, 1, 3000),
+(58, '#66b22c71a30de', 19, 1, 50000),
+(59, '#66b22cb316f0d', 20, 1, 3000),
+(60, '#66b22f8d99b60', 20, 1, 3000),
+(61, '#66b23271ce5ab', 20, 1, 3000),
+(62, '#66b236e1a35fd', 19, 1, 50000);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `tb_ongkir`
+--
+
+CREATE TABLE `tb_ongkir` (
+  `id_ongkir` int(11) NOT NULL,
+  `provinsi_ongkir` varchar(100) NOT NULL,
+  `jumlah_ongkir` bigint(20) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `tb_ongkir`
+--
+
+INSERT INTO `tb_ongkir` (`id_ongkir`, `provinsi_ongkir`, `jumlah_ongkir`) VALUES
+(1, 'Aceh', 50000),
+(3, 'Sumatera Utara', 0),
+(4, 'Sumatera Barat', 50000),
+(5, 'Riau', 0),
+(6, 'Jambi', 0),
+(7, 'Sumatera Selatan', 0),
+(8, 'Bengkulu', 0),
+(9, 'Lampung', 0),
+(10, 'Kepulauan Bangka Belitung\r\n', 0),
+(11, 'Kepulauan Riau', 0),
+(12, 'DKI Jakarta', 0),
+(13, 'Jawa Barat', 0),
+(14, 'Jawa Tengah', 0),
+(15, 'DI Yogyakarta', 0),
+(16, 'Jawa Timur', 0),
+(17, 'Banten', 0),
+(18, 'Bali', 0),
+(19, 'Nusa Tenggara Barat (NTB)', 0),
+(20, 'Nusa Tenggara Timur (NTT)', 0),
+(21, 'Kalimantan Barat', 0),
+(22, 'Kalimantan Tengah', 0),
+(23, 'Kalimantan Selatan', 0),
+(24, 'Kalimantan Timur', 0),
+(25, 'Kalimantan Utara', 0),
+(26, 'Sulawesi Utara', 0),
+(27, 'Sulawesi Tengah', 0),
+(29, 'Sulawesi Selatan', 0),
+(30, 'Sulawesi Tenggara', 0),
+(31, 'Gorontalo', 0),
+(32, 'Sulawesi Barat', 0),
+(33, 'Maluku', 0),
+(34, 'Maluku Utara', 0),
+(35, 'Papua', 0),
+(36, 'Papua Barat', 0),
+(37, 'Papua Selatan', 0),
+(38, 'Papua Tengah', 0),
+(39, 'Papua Pegunungan', 0),
+(40, 'Papua Barat Daya', 0);
 
 -- --------------------------------------------------------
 
@@ -78,7 +140,9 @@ CREATE TABLE `tb_order` (
   `nohp_order` bigint(20) NOT NULL,
   `alamat_order` varchar(100) NOT NULL,
   `tanggal_order` date NOT NULL DEFAULT current_timestamp(),
+  `id_ongkir` int(11) NOT NULL,
   `grandtotal_order` bigint(20) NOT NULL,
+  `after_ongkir_order` bigint(20) NOT NULL,
   `status_order` varchar(30) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -86,9 +150,9 @@ CREATE TABLE `tb_order` (
 -- Dumping data for table `tb_order`
 --
 
-INSERT INTO `tb_order` (`id_order`, `resi_order`, `namacust_order`, `email_order`, `nohp_order`, `alamat_order`, `tanggal_order`, `grandtotal_order`, `status_order`) VALUES
-('#66b112a07b219', 'asdasd', 'coba timestamp', 'wlewle@anjay.com', 123123213, 'asdadasd', '2024-08-06', 7500, 'Pending'),
-('#66b11a0ea4437', '', 'Nanda Qadhafi', 'asdasdas@zds', 123123123, '123asdasd', '2024-07-23', 224000, 'Selesai');
+INSERT INTO `tb_order` (`id_order`, `resi_order`, `namacust_order`, `email_order`, `nohp_order`, `alamat_order`, `tanggal_order`, `id_ongkir`, `grandtotal_order`, `after_ongkir_order`, `status_order`) VALUES
+('#66b23271ce5ab', '', 'Nanda Qadhafi', 'asdasd@asdasd', 123123, 'asdasd', '2024-08-06', 1, 3000, 53000, 'Pending'),
+('#66b236e1a35fd', '', 'asdasd', 'asdasd@asdad', 1231231, 'asdasdasd', '2024-08-06', 1, 50000, 100000, 'Pending');
 
 -- --------------------------------------------------------
 
@@ -131,6 +195,12 @@ ALTER TABLE `tb_keranjang`
   ADD KEY `id` (`id`);
 
 --
+-- Indexes for table `tb_ongkir`
+--
+ALTER TABLE `tb_ongkir`
+  ADD PRIMARY KEY (`id_ongkir`);
+
+--
 -- Indexes for table `tb_order`
 --
 ALTER TABLE `tb_order`
@@ -156,7 +226,13 @@ ALTER TABLE `tb_admin`
 -- AUTO_INCREMENT for table `tb_keranjang`
 --
 ALTER TABLE `tb_keranjang`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=57;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=63;
+
+--
+-- AUTO_INCREMENT for table `tb_ongkir`
+--
+ALTER TABLE `tb_ongkir`
+  MODIFY `id_ongkir` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=41;
 
 --
 -- AUTO_INCREMENT for table `tb_produk`
