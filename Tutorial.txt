@@ -1,0 +1,5 @@
+1. Buka Xampp, start apache dan MySQL
+2. Buka localhost/phpMyAdmin  pada browser
+3. Import file toko_onlineku.sql yang ada di folder ini
+5. Kemudian buka alamat yang mengarah ke folder ini di browser
+6. Enjoy!
