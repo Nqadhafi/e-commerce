@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Aug 06, 2024 at 05:00 PM
+-- Generation Time: Aug 09, 2024 at 03:39 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.0.30
 
@@ -66,9 +66,7 @@ INSERT INTO `tb_keranjang` (`id`, `id_keranjang`, `id_produk`, `qty_keranjang`, 
 (57, '#66b228b9b3dad', 20, 1, 3000),
 (58, '#66b22c71a30de', 19, 1, 50000),
 (59, '#66b22cb316f0d', 20, 1, 3000),
-(60, '#66b22f8d99b60', 20, 1, 3000),
-(61, '#66b23271ce5ab', 20, 1, 3000),
-(62, '#66b236e1a35fd', 19, 1, 50000);
+(60, '#66b22f8d99b60', 20, 1, 3000);
 
 -- --------------------------------------------------------
 
@@ -146,14 +144,6 @@ CREATE TABLE `tb_order` (
   `status_order` varchar(30) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
---
--- Dumping data for table `tb_order`
---
-
-INSERT INTO `tb_order` (`id_order`, `resi_order`, `namacust_order`, `email_order`, `nohp_order`, `alamat_order`, `tanggal_order`, `id_ongkir`, `grandtotal_order`, `after_ongkir_order`, `status_order`) VALUES
-('#66b23271ce5ab', '', 'Nanda Qadhafi', 'asdasd@asdasd', 123123, 'asdasd', '2024-08-06', 1, 3000, 53000, 'Pending'),
-('#66b236e1a35fd', '', 'asdasd', 'asdasd@asdad', 1231231, 'asdasdasd', '2024-08-06', 1, 50000, 100000, 'Pending');
-
 -- --------------------------------------------------------
 
 --
@@ -167,15 +157,6 @@ CREATE TABLE `tb_produk` (
   `deskripsi_produk` varchar(50) NOT NULL,
   `gambar_produk` varchar(100) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Dumping data for table `tb_produk`
---
-
-INSERT INTO `tb_produk` (`id_produk`, `nama_produk`, `harga_produk`, `deskripsi_produk`, `gambar_produk`) VALUES
-(19, 'Kubernetes', 50000, 'Joki kubernetes', '66abb15819ea9.jpg'),
-(20, 'Orang hitam', 3000, 'Anjay nigga', '66aa4bbb60c10.jpg'),
-(21, 'Stiker Vinyl', 7500, 'Ini stiker coy', '66aba71a8f2f0.png');
 
 --
 -- Indexes for dumped tables

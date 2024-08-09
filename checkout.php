@@ -89,7 +89,8 @@ include('./config.php'); // Pastikan config.php terinclude untuk koneksi databas
                             <p>Rp.<?php echo number_format($subtotal, 0, ',', '.'); ?></p>
                         </div>
                         <div>
-                            <p><i>*Harga di atas belum termasuk ongkos kirim, hubungi admin untuk informasi lebih lanjut</i></p>
+                            <p><i>*Harga di atas belum termasuk ongkos kirim</i></p>
+                            <p><i>**Harga ongkir belum pasti, tergantung volume dan jumlah barang, hubungi admin untuk informasi lebih lanjut</i></p>
                         </div>
                     </div>
                 </div>
