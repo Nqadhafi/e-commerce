@@ -23,11 +23,13 @@ if (isset($_SESSION['keranjang'])) {
 
 <body>
     <!-- Navbar -->
-    <nav class="navbar navbar-expand-md d-flex flex-row bg-warning">
+    <nav class="navbar navbar-expand-md d-flex flex-row bg-dark text-white">
         <div class="container-fluid d-flex flex-column">
             <div class="d-flex flex-row justify-content-between">
             <a class="navbar-brand" href="./">
-                <h1 class="text-center"><?php echo $nama_toko ?></h1>
+                <div class="mb-0 text-center">
+        <img src="./assets/img/logo-utama.png" alt="Note Pro" class="w-50">
+        </div>
             </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
@@ -40,17 +42,17 @@ if (isset($_SESSION['keranjang'])) {
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
                 <div class="d-flex flex-column">
                     <div class="justify-content-center  align-self-center mb-1">
-                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0 ">
                     <li class="nav-item p-1">
-                        <a class="nav-link active" aria-current="page" href="./">Home</a>
+                        <a class="nav-link active text-white" aria-current="page" href="./">Home</a>
                     </li>
                     <li class="nav-item p-1">
-                        <a class="nav-link" href="check.php">Check Status</a>
+                        <a class="nav-link text-white" href="check.php">Check Status</a>
                     </li>
                     
                     <!-- Cart -->
-                    <li class="nav-item p-1">
-                        <a class="nav-link d-flex" href="./cart.php" id="cart">
+                    <li class="nav-item p-1 ">
+                        <a class="nav-link d-flex text-white" href="./cart.php" id="cart">
                         <div class="icon-cart me-1">
                         <img src="./assets/img/cart.png" alt="">
                         </div>
