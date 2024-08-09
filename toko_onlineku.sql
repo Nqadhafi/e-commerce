@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Aug 09, 2024 at 03:39 PM
+-- Generation Time: Aug 09, 2024 at 04:07 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.0.30
 
@@ -20,10 +20,10 @@ SET time_zone = "+00:00";
 --
 -- Database: `toko_onlineku`
 --
+
+-- --------------------------------------------------------
 CREATE DATABASE IF NOT EXISTS `toko_onlineku` DEFAULT CHARACTER SET latin1 COLLATE latin1_swedish_ci;
 USE `toko_onlineku`;
--- --------------------------------------------------------
-
 --
 -- Table structure for table `tb_admin`
 --
@@ -54,19 +54,6 @@ CREATE TABLE `tb_keranjang` (
   `qty_keranjang` int(11) NOT NULL,
   `subtotal_keranjang` bigint(20) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Dumping data for table `tb_keranjang`
---
-
-INSERT INTO `tb_keranjang` (`id`, `id_keranjang`, `id_produk`, `qty_keranjang`, `subtotal_keranjang`) VALUES
-(54, '#66b112a07b219', 21, 1, 7500),
-(55, '#66b11a0ea4437', 19, 4, 200000),
-(56, '#66b11a0ea4437', 20, 8, 24000),
-(57, '#66b228b9b3dad', 20, 1, 3000),
-(58, '#66b22c71a30de', 19, 1, 50000),
-(59, '#66b22cb316f0d', 20, 1, 3000),
-(60, '#66b22f8d99b60', 20, 1, 3000);
 
 -- --------------------------------------------------------
 
@@ -219,7 +206,7 @@ ALTER TABLE `tb_ongkir`
 -- AUTO_INCREMENT for table `tb_produk`
 --
 ALTER TABLE `tb_produk`
-  MODIFY `id_produk` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=22;
+  MODIFY `id_produk` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=23;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
