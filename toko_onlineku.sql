@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Aug 09, 2024 at 04:07 PM
+-- Generation Time: Aug 15, 2024 at 06:08 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.0.30
 
@@ -22,8 +22,7 @@ SET time_zone = "+00:00";
 --
 
 -- --------------------------------------------------------
-CREATE DATABASE IF NOT EXISTS `toko_onlineku` DEFAULT CHARACTER SET latin1 COLLATE latin1_swedish_ci;
-USE `toko_onlineku`;
+
 --
 -- Table structure for table `tb_admin`
 --
@@ -58,62 +57,6 @@ CREATE TABLE `tb_keranjang` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `tb_ongkir`
---
-
-CREATE TABLE `tb_ongkir` (
-  `id_ongkir` int(11) NOT NULL,
-  `provinsi_ongkir` varchar(100) NOT NULL,
-  `jumlah_ongkir` bigint(20) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Dumping data for table `tb_ongkir`
---
-
-INSERT INTO `tb_ongkir` (`id_ongkir`, `provinsi_ongkir`, `jumlah_ongkir`) VALUES
-(1, 'Aceh', 50000),
-(3, 'Sumatera Utara', 0),
-(4, 'Sumatera Barat', 50000),
-(5, 'Riau', 0),
-(6, 'Jambi', 0),
-(7, 'Sumatera Selatan', 0),
-(8, 'Bengkulu', 0),
-(9, 'Lampung', 0),
-(10, 'Kepulauan Bangka Belitung\r\n', 0),
-(11, 'Kepulauan Riau', 0),
-(12, 'DKI Jakarta', 0),
-(13, 'Jawa Barat', 0),
-(14, 'Jawa Tengah', 0),
-(15, 'DI Yogyakarta', 0),
-(16, 'Jawa Timur', 0),
-(17, 'Banten', 0),
-(18, 'Bali', 0),
-(19, 'Nusa Tenggara Barat (NTB)', 0),
-(20, 'Nusa Tenggara Timur (NTT)', 0),
-(21, 'Kalimantan Barat', 0),
-(22, 'Kalimantan Tengah', 0),
-(23, 'Kalimantan Selatan', 0),
-(24, 'Kalimantan Timur', 0),
-(25, 'Kalimantan Utara', 0),
-(26, 'Sulawesi Utara', 0),
-(27, 'Sulawesi Tengah', 0),
-(29, 'Sulawesi Selatan', 0),
-(30, 'Sulawesi Tenggara', 0),
-(31, 'Gorontalo', 0),
-(32, 'Sulawesi Barat', 0),
-(33, 'Maluku', 0),
-(34, 'Maluku Utara', 0),
-(35, 'Papua', 0),
-(36, 'Papua Barat', 0),
-(37, 'Papua Selatan', 0),
-(38, 'Papua Tengah', 0),
-(39, 'Papua Pegunungan', 0),
-(40, 'Papua Barat Daya', 0);
-
--- --------------------------------------------------------
-
---
 -- Table structure for table `tb_order`
 --
 
@@ -141,6 +84,8 @@ CREATE TABLE `tb_produk` (
   `id_produk` int(11) NOT NULL,
   `nama_produk` varchar(30) NOT NULL,
   `harga_produk` int(10) NOT NULL,
+  `stok_produk` int(11) NOT NULL,
+  `berat_produk` int(11) NOT NULL,
   `deskripsi_produk` varchar(50) NOT NULL,
   `gambar_produk` varchar(100) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
@@ -161,12 +106,6 @@ ALTER TABLE `tb_admin`
 ALTER TABLE `tb_keranjang`
   ADD PRIMARY KEY (`id`),
   ADD KEY `id` (`id`);
-
---
--- Indexes for table `tb_ongkir`
---
-ALTER TABLE `tb_ongkir`
-  ADD PRIMARY KEY (`id_ongkir`);
 
 --
 -- Indexes for table `tb_order`
@@ -197,16 +136,10 @@ ALTER TABLE `tb_keranjang`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=63;
 
 --
--- AUTO_INCREMENT for table `tb_ongkir`
---
-ALTER TABLE `tb_ongkir`
-  MODIFY `id_ongkir` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=41;
-
---
 -- AUTO_INCREMENT for table `tb_produk`
 --
 ALTER TABLE `tb_produk`
-  MODIFY `id_produk` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=23;
+  MODIFY `id_produk` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=26;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
