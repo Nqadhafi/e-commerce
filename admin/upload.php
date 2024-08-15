@@ -50,7 +50,7 @@ if (isset($_POST['tambah'])){
             </div>
             <div class="mb-2 ">
                 <label for="harga_produk" class="form-label">Harga Produk (Rp)</label>
-                <input type="number" class="form-control" name="harga_produk" required>
+                <input type="number" class="form-control" name="harga_produk" min="1" required>
             </div>
             <div class="mb-2 ">
                 <label for="deskripsi_produk" class="form-label">Deskripsi produk :</label>
