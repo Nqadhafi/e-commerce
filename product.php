@@ -61,7 +61,14 @@ if(isset($_POST['transaksi'])){
         <div class="card-body col-md-5">
             <h2 class="card-title fw-bolder"><?php echo $nama_produk ?></h2>
             <p class="card-text harga fs-4">Rp.<?php echo number_format($harga_produk, 0, ',', '.'); ?></p>
+            <span class="d-flex">
+                <p class="fw-semibold pe-1">Stok:</p>
+                <p>50</p>
+            </span>
             <hr>
+            <span class="d-flex">
+            <p class="fw-bold pe-1">Berat Produk: </p>
+            <p>500g</p></span>
             <p class="card-text fw-semibold">Deskripsi produk :</p>
             <p class="card-text"><?php echo $deskripsi_produk ?></p>
             <!-- form -->

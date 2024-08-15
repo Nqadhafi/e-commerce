@@ -53,6 +53,14 @@ if (isset($_POST['tambah'])){
                 <input type="number" class="form-control" name="harga_produk" min="1" required>
             </div>
             <div class="mb-2 ">
+                <label for="harga_produk" class="form-label">Berat Produk (gram)</label>
+                <input type="number" class="form-control" name="berat_produk" min="1" required>
+            </div>
+            <div class="mb-2 ">
+                <label for="harga_produk" class="form-label">Stok Produk</label>
+                <input type="number" class="form-control" name="stok_produk" min="1" required>
+            </div>
+            <div class="mb-2 ">
                 <label for="deskripsi_produk" class="form-label">Deskripsi produk :</label>
                 <textarea name="deskripsi_produk" class="form-control" id=""></textarea>
             </div>
