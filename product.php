@@ -13,6 +13,8 @@ if (!empty($data)){
 $gambar_produk =$data[0]['gambar_produk'];
 $nama_produk = $data[0]['nama_produk'];
 $harga_produk = $data[0]['harga_produk'];
+$berat_produk = $data[0]['berat_produk'];
+$stok_produk = $data[0]['stok_produk'];
 $deskripsi_produk = $data[0]['deskripsi_produk'];
 }
 
@@ -55,7 +57,7 @@ if(isset($_POST['transaksi'])){
         <?php if(isset($_GET['id']) &&  !empty($data)) :?>
     <div class="card" style="max-width: 100hw;">
         <div class="row">
-        <div class="col-md-7 text-center front-display">
+        <div class="col-md-7 text-center front-display p-5">
         <img src="./assets/uploads/<?php echo $gambar_produk ?>" class="card-img-top " alt="...">
         </div>
         <div class="card-body col-md-5">
@@ -63,12 +65,12 @@ if(isset($_POST['transaksi'])){
             <p class="card-text harga fs-4">Rp.<?php echo number_format($harga_produk, 0, ',', '.'); ?></p>
             <span class="d-flex">
                 <p class="fw-semibold pe-1">Stok:</p>
-                <p>50</p>
+                <p><?php echo $stok_produk ?></p>
             </span>
             <hr>
             <span class="d-flex">
             <p class="fw-bold pe-1">Berat Produk: </p>
-            <p>500g</p></span>
+            <p><?php echo $berat_produk ?></p></span>
             <p class="card-text fw-semibold">Deskripsi produk :</p>
             <p class="card-text"><?php echo $deskripsi_produk ?></p>
             <!-- form -->

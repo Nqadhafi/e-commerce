@@ -3,6 +3,8 @@
 if (isset($_POST['tambah'])){
     $p_nama = $_POST['nama_produk'];
     $p_harga = $_POST['harga_produk'];
+    $p_berat = $_POST['berat_produk'];
+    $p_stok = $_POST['stok_produk'];
     $p_deskripsi = $_POST['deskripsi_produk'];
     $p_gambar = $_FILES['gambar_produk']['name'];
     $p_gambar_temp = $_FILES['gambar_produk']['tmp_name'];
@@ -15,12 +17,16 @@ if (isset($_POST['tambah'])){
     $query = mysqli_query($config, "INSERT INTO `tb_produk`(
     nama_produk,
     harga_produk,
+    berat_produk,
+    stok_produk,
     deskripsi_produk,
     gambar_produk
     ) 
     VALUES (
     '$p_nama',
     '$p_harga',
+    '$p_berat',
+    '$p_stok',
     '$p_deskripsi',
     '$unique_name'
     )");

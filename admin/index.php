@@ -84,6 +84,8 @@ if(!isset($_SESSION['admin_id']) && !isset($_SESSION['admin_username'])){
                 <td>Gambar Produk</td>
                 <td>Nama Produk</td>
                 <td>Harga Produk</td>
+                <td>Berat Produk (gram)</td>
+                <td>Stok Produk (gram)</td>
                 <td>Deskripsi Produk</td>
                 <td>Action</td>
             </thead>
@@ -104,6 +106,8 @@ if(!isset($_SESSION['admin_id']) && !isset($_SESSION['admin_username'])){
                     </td>
                     <td><?php echo $data['nama_produk']?></td>
                     <td>Rp. <?php echo number_format($data['harga_produk'], 0, ',', '.')?>,-</td>
+                    <td><?php echo $data['berat_produk']?> gram</td>
+                    <td><?php echo $data['stok_produk']?></td>
                     <td><?php echo $data['deskripsi_produk']?></td>
                     <td>
                         <a href="./?page=update&id=<?php echo $data['id_produk'] ?>" class="btn btn-warning mb-1">Edit</a>

@@ -17,6 +17,8 @@ if (isset($_GET['id'])) {
 if (isset($_POST['update'])) {
     $p_nama = $_POST['nama_produk'];
     $p_harga = $_POST['harga_produk'];
+    $p_berat = $_POST['berat_produk'];
+    $p_stok = $_POST['stok_produk'];
     $p_deskripsi = $_POST['deskripsi_produk'];
     $p_gambar = $_FILES['gambar_produk']['name'];
     $p_gambar_temp = $_FILES['gambar_produk']['tmp_name'];
@@ -43,6 +45,8 @@ if (isset($_POST['update'])) {
         $query = mysqli_query($config, "UPDATE tb_produk SET 
             nama_produk = '$p_nama', 
             harga_produk = '$p_harga', 
+            berat_produk = '$p_berat', 
+            stok_produk = '$p_stok', 
             deskripsi_produk = '$p_deskripsi', 
             gambar_produk = '$unique_name' 
             WHERE id_produk = '$id'");
@@ -51,6 +55,8 @@ if (isset($_POST['update'])) {
         $query = mysqli_query($config, "UPDATE tb_produk SET 
             nama_produk = '$p_nama', 
             harga_produk = '$p_harga', 
+            berat_produk = '$p_berat', 
+            stok_produk = '$p_stok',
             deskripsi_produk = '$p_deskripsi' 
             WHERE id_produk = '$id'");
     }
@@ -76,7 +82,15 @@ if (isset($_POST['update'])) {
             </div>
             <div class="mb-2">
                 <label for="harga_produk" class="form-label">Harga Produk (Rp):</label>
-                <input type="number" value="<?php echo isset($produk['harga_produk']) ? $produk['harga_produk'] : ''; ?>" class="form-control" name="harga_produk" required>
+                <input type="number" value="<?php echo isset($produk['harga_produk']) ? $produk['harga_produk'] : ''; ?>" min="1" class="form-control" name="harga_produk" required>
+            </div>
+            <div class="mb-2">
+                <label for="berat_produk" class="form-label">Berat Produk (gram):</label>
+                <input type="number" value="<?php echo isset($produk['berat_produk']) ? $produk['berat_produk'] : ''; ?>" min="1" class="form-control" name="berat_produk" required>
+            </div>
+            <div class="mb-2">
+                <label for="stok_produk" class="form-label">Stok Produk:</label>
+                <input type="number" value="<?php echo isset($produk['stok_produk']) ? $produk['stok_produk'] : ''; ?>" min="1" class="form-control" name="stok_produk" required>
             </div>
             <div class="mb-2">
                 <label for="deskripsi_produk" class="form-label">Deskripsi Produk:</label>
