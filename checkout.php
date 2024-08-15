@@ -35,7 +35,7 @@ include('./config.php'); // Pastikan config.php terinclude untuk koneksi databas
                             </div>
                             <div class="col-6 d-flex flex-column mb-3">
                                 <label for="alamat">Alamat Lengkap :</label>
-                                <textarea class="form-control" name="alamat" id=""></textarea>
+                                <textarea class="form-control" name="alamat" id="" required></textarea>
                             </div>
                             <div class="col-6 d-flex flex-column mb-3">
                                 <label for="provinsi">Provinsi :</label>
