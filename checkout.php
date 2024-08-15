@@ -37,23 +37,6 @@ include('./config.php'); // Pastikan config.php terinclude untuk koneksi databas
                                 <label for="alamat">Alamat Lengkap :</label>
                                 <textarea class="form-control" name="alamat" id="" required></textarea>
                             </div>
-                            <div class="col-6 d-flex flex-column mb-3">
-                                <label for="provinsi">Provinsi :</label>
-                                <select class="form-control" name="provinsi" required>
-                                    <option value="">Pilih Provinsi</option>
-                                    <?php
-                                    // Query untuk mendapatkan data provinsi dari tb_ongkir
-                                    $provinsi_query = mysqli_query($config, "SELECT * FROM tb_ongkir");
-                                    if ($provinsi_query) {
-                                        while ($row = mysqli_fetch_assoc($provinsi_query)) {
-                                            echo '<option value="' . htmlspecialchars($row['id_ongkir']) . '">' . htmlspecialchars($row['provinsi_ongkir']) . '</option>';
-                                        }
-                                    } else {
-                                        echo '<option value="">Tidak ada provinsi tersedia</option>';
-                                    }
-                                    ?>
-                                </select>
-                            </div>
                         </div>
                     </div>
 

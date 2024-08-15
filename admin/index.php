@@ -44,9 +44,6 @@ if(!isset($_SESSION['admin_id']) && !isset($_SESSION['admin_username'])){
                                 <a class="nav-link text-white" href="?page=check">Cek Status Pesanan</a>
                             </li>
                             <li class="nav-item p-1">
-                                <a class="nav-link text-white" href="?page=ongkir">Set Ongkir</a>
-                            </li>
-                            <li class="nav-item p-1">
                                 <a class="nav-link text-white" href="./logout.php" onclick="return confirm('Apakah anda yakin logout?');">Logout</a>
                             </li>
                         </ul>
