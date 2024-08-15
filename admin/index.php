@@ -22,10 +22,10 @@ if(!isset($_SESSION['admin_id']) && !isset($_SESSION['admin_username'])){
 <body>
 
     <!-- Navbar -->
-    <nav class="navbar navbar-expand-md d-flex flex-row bg-secondary">
+    <nav class="navbar navbar-expand-md d-flex flex-row bg-primary">
         <div class="container-fluid d-flex flex-column">
             <div class="d-flex flex-row justify-content-between">
-                <a class="navbar-brand" href="./">
+                <a class="navbar-brand text-white" href="./">
                     <h1>Admin Panel</h1>
                 </a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -36,18 +36,18 @@ if(!isset($_SESSION['admin_id']) && !isset($_SESSION['admin_username'])){
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
                 <div class="d-flex flex-column">
                     <div class="justify-content-center  align-self-center mb-1">
-                        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                        <ul class="navbar-nav me-auto mb-2 mb-lg-0 ">
                             <li class="nav-item p-1">
-                                <a class="nav-link" aria-current="page" href="?page=tambah">Tambah Produk</a>
+                                <a class="nav-link text-white" aria-current="page" href="?page=tambah">Tambah Produk</a>
                             </li>
                             <li class="nav-item p-1">
-                                <a class="nav-link" href="?page=check">Cek Status Pesanan</a>
+                                <a class="nav-link text-white" href="?page=check">Cek Status Pesanan</a>
                             </li>
                             <li class="nav-item p-1">
-                                <a class="nav-link" href="?page=ongkir">Set Ongkir</a>
+                                <a class="nav-link text-white" href="?page=ongkir">Set Ongkir</a>
                             </li>
                             <li class="nav-item p-1">
-                                <a class="nav-link" href="./logout.php" onclick="return confirm('Apakah anda yakin logout?');">Logout</a>
+                                <a class="nav-link text-white" href="./logout.php" onclick="return confirm('Apakah anda yakin logout?');">Logout</a>
                             </li>
                         </ul>
                     </div>
