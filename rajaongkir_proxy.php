@@ -1,10 +1,10 @@
 <?php
+include('config.php');
 header('Access-Control-Allow-Origin: *');
-
 $endpoint = isset($_GET['endpoint']) ? $_GET['endpoint'] : '';
 $url = "https://api.rajaongkir.com/starter/" . $endpoint;
 $headers = array(
-    "key: "
+    "key: $api_rajaongkir"
 );
 
 $ch = curl_init();

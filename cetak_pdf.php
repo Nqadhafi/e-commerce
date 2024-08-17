@@ -23,12 +23,8 @@ if (!$query) {
 $order = mysqli_fetch_assoc($query);
 
 if ($order) {
-    // Ambil ID Ongkir dari tb_order
-    $id_ongkir = $order['id_ongkir'];
-
-    // Query untuk mendapatkan biaya ongkir dari tb_ongkir berdasarkan id_ongkir
-    $query_ongkir = mysqli_query($config, "SELECT jumlah_ongkir FROM tb_ongkir WHERE id_ongkir = '$id_ongkir'");
-    $ongkir = mysqli_fetch_assoc($query_ongkir)['jumlah_ongkir'];
+    // Ambil detail ongkir dari tabel tb_order langsung
+    $ongkir = $order['ongkir_order'];
 
     // Query untuk mendapatkan detail produk dalam pesanan
     $query_items = mysqli_query($config, "SELECT p.nama_produk, p.harga_produk, k.qty_keranjang 
@@ -76,7 +72,8 @@ if ($order) {
                 <p><strong>Nama Customer:</strong> <?php echo htmlspecialchars($order['namacust_order']); ?></p>
                 <p><strong>Email:</strong> <?php echo htmlspecialchars($order['email_order']); ?></p>
                 <p><strong>No. HP:</strong> <?php echo htmlspecialchars($order['nohp_order']); ?></p>
-                <p><strong>Alamat:</strong> <?php echo htmlspecialchars($order['alamat_order']); ?></p>
+                <p><strong>Alamat:</strong> <?php echo htmlspecialchars($order['alamat_order']) .",". $order['kabupaten_order'] .",". $order['provinsi_order']; ?></p>
+                <p><strong>Metode Pembayaran:</strong> Transfer <?php echo htmlspecialchars($order['metode_pembayaran']); ?></p>
                 <p><strong>Status:</strong> <?php echo htmlspecialchars($order['status_order']); ?></p>
             </div>
             <div class="invoice-items">
@@ -120,7 +117,7 @@ if ($order) {
                 </table>
             </div>
             <div class="invoice-footer text-center">
-                <h4 class="mb-3">Terima kasih atas pembelian Anda!</h4>
+                <h4 class="mb-3">Terima kasih atas pembelian Anda di Notepro!</h4>
             </div>
         </div>
     </body>

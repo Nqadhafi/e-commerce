@@ -1,9 +1,43 @@
 <?php
-ob_start(); // Memulai output buffering
-
-session_start(); // Memulai sesi
-
 include('./config.php');
+
+// Fungsi untuk mendapatkan nama provinsi berdasarkan ID
+function getProvinceName($province_id) {
+    $url = buildRajaOngkirUrl("province", ['id' => $province_id]);
+    $response = getCurlResponse($url);
+    $data = json_decode($response, true);
+
+    if ($data === null) {
+        echo "<script>alert('Gagal mengambil data provinsi. Response dari API tidak valid.');</script>";
+        return null;
+    }
+    
+    if (!isset($data['rajaongkir']['results'])) {
+        echo "<script>alert('Data provinsi tidak ditemukan dalam respons. Cek format JSON.');</script>";
+        return null;
+    }
+
+    return isset($data['rajaongkir']['results'][0]['province']) ? $data['rajaongkir']['results'][0]['province'] : null;
+}
+
+// Fungsi untuk mendapatkan nama kota berdasarkan ID
+function getCityName($city_id) {
+    $url = buildRajaOngkirUrl("city", ['id' => $city_id]);
+    $response = getCurlResponse($url);
+    $data = json_decode($response, true);
+
+    if ($data === null) {
+        echo "<script>alert('Gagal mengambil data kabupaten. Response dari API tidak valid.');</script>";
+        return null;
+    }
+    
+    if (!isset($data['rajaongkir']['results'])) {
+        echo "<script>alert('Data kabupaten tidak ditemukan dalam respons. Cek format JSON.');</script>";
+        return null;
+    }
+
+    return isset($data['rajaongkir']['results'][0]['city_name']) ? $data['rajaongkir']['results'][0]['city_name'] : null;
+}
 
 // Generate unique order ID
 $order_id = "#" . uniqid();
@@ -14,45 +48,77 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $email = filter_input(INPUT_POST, 'email', FILTER_SANITIZE_EMAIL);
     $nohp = filter_input(INPUT_POST, 'nomor_handphone', FILTER_SANITIZE_STRING);
     $alamat = filter_input(INPUT_POST, 'alamat', FILTER_SANITIZE_STRING);
-    $subtotal = filter_input(INPUT_POST, 'subtotal', FILTER_SANITIZE_STRING);
-    $provinsi = filter_input(INPUT_POST, 'provinsi', FILTER_SANITIZE_STRING);
+    $provinsi_id = filter_input(INPUT_POST, 'provinsi', FILTER_SANITIZE_STRING);
+    $kabupaten_id = filter_input(INPUT_POST, 'kabupaten', FILTER_SANITIZE_STRING);
+    $subtotal = filter_input(INPUT_POST, 'subtotal', FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
+    $total_weight = filter_input(INPUT_POST, 'total_weight', FILTER_SANITIZE_NUMBER_INT);
+    $ongkir = filter_input(INPUT_POST, 'ongkir', FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
+    $metode_pembayaran = filter_input(INPUT_POST, 'metode_pembayaran', FILTER_SANITIZE_STRING);
+    $grand_total = $subtotal + $ongkir;
 
-    $ongkir = mysqli_query($config,"SELECT * FROM tb_ongkir WHERE id_ongkir = '$provinsi'");
-    $juml = mysqli_fetch_all($ongkir, MYSQLI_ASSOC);
-    $biaya_ongkir = $juml[0]['jumlah_ongkir'];
-    $after_ongkir = $biaya_ongkir+$subtotal;
-    // Masukkan data ke tabel tb_order dengan waktu sekarang
+    // Fetch province and city names
+    $provinsi = getProvinceName($provinsi_id);
+    $kabupaten = getCityName($kabupaten_id);
+
+    // Debug: Cek apakah provinsi dan kabupaten berhasil diambil
+    if (is_null($provinsi) || is_null($kabupaten)) {
+        echo "<script>alert('Gagal mengambil data provinsi atau kabupaten. Silakan coba lagi.'); window.location.href='./checkout.php';</script>";
+        exit;
+    }
+
+    // Masukkan data ke tabel tb_order
     $order = mysqli_query($config, "INSERT INTO `tb_order` (
         id_order,
         namacust_order,
         email_order,
         nohp_order,
         alamat_order,
+        provinsi_order,
+        kabupaten_order,
+        subtotal_order,
+        total_weight_order,
+        ongkir_order,
         grandtotal_order,
-        after_ongkir_order,
+        metode_pembayaran,
         status_order,
-        id_ongkir,
-        tanggal_order -- Menambahkan kolom untuk menyimpan tanggal
+        tanggal_order
     ) VALUES (
         '$order_id',
         '$nama',
         '$email',
         '$nohp',
         '$alamat',
-        '$subtotal',
-        '$after_ongkir',
-        'Pending',
         '$provinsi',
-        NOW() -- Menyimpan waktu saat ini ke kolom tanggal_order
+        '$kabupaten',
+        '$subtotal',
+        '$total_weight',
+        '$ongkir',
+        '$grand_total',
+        '$metode_pembayaran',
+        'Belum Bayar',
+        NOW()
     )");
 
     if ($order) {
         foreach ($_SESSION['keranjang'] as $id_produk => $qty) {
-            $product_query = mysqli_query($config, "SELECT harga_produk FROM tb_produk WHERE id_produk = '$id_produk'");
+            $product_query = mysqli_query($config, "SELECT harga_produk, stok_produk FROM tb_produk WHERE id_produk = '$id_produk'");
             $product = mysqli_fetch_assoc($product_query);
             $harga_produk = $product['harga_produk'];
+            $stok_produk = $product['stok_produk'];
+
+            // Menghitung subtotal untuk produk
             $subtotal_keranjang = $qty * $harga_produk;
 
+            // Kurangi stok produk
+            if ($stok_produk >= $qty) {
+                $new_stok = $stok_produk - $qty;
+                mysqli_query($config, "UPDATE tb_produk SET stok_produk = '$new_stok' WHERE id_produk = '$id_produk'");
+            } else {
+                echo "<script>alert('Stok tidak mencukupi untuk produk $id_produk.'); window.location.href='./cart.php';</script>";
+                exit;
+            }
+
+            // Masukkan data ke tb_keranjang
             $add_to_cart = mysqli_query($config, "INSERT INTO `tb_keranjang`(
                 id_keranjang,
                 id_produk,
@@ -70,18 +136,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         session_unset(); // Menghapus semua variabel sesi
         session_destroy(); // Menghancurkan sesi
 
-        // Debug statement
-        $pagar = "%23";
-        $convert_id = $pagar . substr($order_id,1);
-
-        echo "<script> alert('Pesanan Anda Berhasil'); window.location.href='./check.php?orderid=$convert_id'; </script>";
-       
+        // Redirect ke halaman sukses
+        $order_id_encoded = urlencode($order_id);
+        echo "<script> alert('Pesanan Anda Berhasil'); window.location.href='./check.php?orderid=$order_id_encoded'; </script>";
+        
     } else {
         echo "Gagal menyimpan data order.";
     }
 } else {
     echo "Tidak ada data yang dikirim.";
 }
-
-ob_end_flush(); // Mengakhiri output buffering dan mengirim output ke browser
 ?>

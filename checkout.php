@@ -1,5 +1,5 @@
 <?php
-include('header.php');
+include('./header.php');
 include('./config.php'); // Pastikan config.php terinclude untuk koneksi database
 ?>
 <!DOCTYPE html>
@@ -55,6 +55,13 @@ include('./config.php'); // Pastikan config.php terinclude untuk koneksi databas
                     </div>
 
                     <div class="col-lg-6 bg-light">
+                        <div class="col-6 d-flex m-2 p-2 flex-column">
+                            <label for="metode_pembayaran" class="fw-bold">Pilih Metode Pembayaran :</label>
+                            <select class="form-control" name="metode_pembayaran" required>
+                                <option value="BRI">Transfer BRI - <?php echo $rekening_bri; ?></option>
+                                <option value="BCA">Transfer BCA - <?php echo $rekening_bca; ?></option>
+                            </select>
+                        </div>
                         <h4 class="text-center">Produk yang Anda Checkout</h4>
                         <div class="d-flex flex-column">
                             <?php
@@ -101,7 +108,9 @@ include('./config.php'); // Pastikan config.php terinclude untuk koneksi databas
                             <h5>Grand Total</h5>
                             <p id="grand-total">Rp.<?php echo number_format($subtotal, 0, ',', '.'); ?></p> <!-- Menampilkan grand total -->
                         </div>
+                        <p><i>*Pengiriman dari Kota Surakarta</i></p>
                         <div class="text-center mt-4">
+                            <p>Jasa pengiriman by :</p>
                             <img src="./assets/img/jtr_logo.png" alt="JNE Logo" style="width: 100px;"> <!-- Tambahkan logo JNE -->
                         </div>
                     </div>
@@ -118,109 +127,109 @@ include('./config.php'); // Pastikan config.php terinclude untuk koneksi databas
         </div>
 
         <script>
-            $(document).ready(function() {
-                let totalWeight = <?php echo $total_weight; ?>;
-                let subtotal = <?php echo $subtotal; ?>;
+           $(document).ready(function() {
+    let totalWeight = <?php echo $total_weight; ?>;
+    let subtotal = <?php echo $subtotal; ?>;
 
-                // Mengambil data provinsi dari API RajaOngkir melalui proxy
-                $.ajax({
-                    type: "GET",
-                    url: "http://localhost/wleowleo/rajaongkir_proxy.php?endpoint=province",
-                    success: function(data) {
-                        try {
-                            data = JSON.parse(data);
-                            if (data.rajaongkir && data.rajaongkir.results) {
-                                $.each(data.rajaongkir.results, function(index, value) {
-                                    $('#provinsi').append('<option value="'+value.province_id+'">'+value.province+'</option>');
-                                });
-                            } else {
-                                console.error("Data tidak memiliki struktur yang diharapkan:", data);
-                                alert("Data provinsi tidak tersedia. Silakan coba lagi.");
-                            }
-                        } catch (e) {
-                            console.error("Error parsing JSON:", e);
+    // Mengambil data provinsi dari API RajaOngkir melalui proxy
+    $.ajax({
+        type: "GET",
+        url: "<?php echo buildRajaOngkirUrl('province'); ?>",
+        success: function(data) {
+            try {
+                data = JSON.parse(data);
+                if (data.rajaongkir && data.rajaongkir.results) {
+                    $.each(data.rajaongkir.results, function(index, value) {
+                        $('#provinsi').append('<option value="'+value.province_id+'">'+value.province+'</option>');
+                    });
+                } else {
+                    console.error("Data tidak memiliki struktur yang diharapkan:", data);
+                    alert("Data provinsi tidak tersedia. Silakan coba lagi.");
+                }
+            } catch (e) {
+                console.error("Error parsing JSON:", e);
+            }
+        },
+        error: function(jqXHR, textStatus, errorThrown) {
+            console.error("Error fetching province data: ", textStatus, errorThrown);
+        }
+    });
+
+    // Mengambil data kabupaten berdasarkan provinsi yang dipilih
+    $('#provinsi').on('change', function() {
+        var province_id = $(this).val();
+        if(province_id) {
+            $.ajax({
+                type: "GET",
+                url: "<?php echo buildRajaOngkirUrl('city', ['province' => '']); ?>" + province_id,
+                success: function(data) {
+                    try {
+                        data = JSON.parse(data);
+                        if (data.rajaongkir && data.rajaongkir.results) {
+                            $('#kabupaten').empty().append('<option value="">Pilih Kabupaten/Kota</option>');
+                            $.each(data.rajaongkir.results, function(index, value) {
+                                $('#kabupaten').append('<option value="'+value.city_id+'">'+value.city_name+'</option>');
+                            });
+                        } else {
+                            console.error("Data tidak memiliki struktur yang diharapkan:", data);
+                            alert("Data kabupaten/kota tidak tersedia. Silakan coba lagi.");
                         }
-                    },
-                    error: function(jqXHR, textStatus, errorThrown) {
-                        console.error("Error fetching province data: ", textStatus, errorThrown);
+                    } catch (e) {
+                        console.error("Error parsing JSON:", e);
                     }
-                });
-
-                // Mengambil data kabupaten berdasarkan provinsi yang dipilih
-                $('#provinsi').on('change', function() {
-                    var province_id = $(this).val();
-                    if(province_id) {
-                        $.ajax({
-                            type: "GET",
-                            url: "http://localhost/wleowleo/rajaongkir_proxy.php?endpoint=city&province=" + province_id,
-                            success: function(data) {
-                                try {
-                                    data = JSON.parse(data);
-                                    if (data.rajaongkir && data.rajaongkir.results) {
-                                        $('#kabupaten').empty().append('<option value="">Pilih Kabupaten/Kota</option>');
-                                        $.each(data.rajaongkir.results, function(index, value) {
-                                            $('#kabupaten').append('<option value="'+value.city_id+'">'+value.city_name+'</option>');
-                                        });
-                                    } else {
-                                        console.error("Data tidak memiliki struktur yang diharapkan:", data);
-                                        alert("Data kabupaten/kota tidak tersedia. Silakan coba lagi.");
-                                    }
-                                } catch (e) {
-                                    console.error("Error parsing JSON:", e);
-                                }
-                            },
-                            error: function(jqXHR, textStatus, errorThrown) {
-                                console.error("Error fetching city data: ", textStatus, errorThrown);
-                            }
-                        });
-                    } else {
-                        $('#kabupaten').empty().append('<option value="">Pilih Kabupaten/Kota</option>');
-                    }
-                });
-
-                // Menghitung ongkir berdasarkan total berat dan kabupaten/kota yang dipilih
-                $('#kabupaten').on('change', function() {
-                    var city_id = $(this).val();
-                    if(city_id) {
-                        $.ajax({
-                            type: "POST",
-                            url: "http://localhost/wleowleo/rajaongkir_proxy.php?endpoint=cost",
-                            data: {
-                                origin: 445, // ID Kota Solo (Surakarta)
-                                destination: city_id,
-                                weight: totalWeight,
-                                courier: "jne"
-                            },
-                            success: function(data) {
-                                try {
-                                    data = JSON.parse(data);
-                                    if (data.rajaongkir && data.rajaongkir.results) {
-                                        // Filter untuk mencari JNE Cargo (JTR)
-                                        var cargoService = data.rajaongkir.results[0].costs.find(service => service.service === "JTR");
-                                        
-                                        if (cargoService) {
-                                            var ongkir = cargoService.cost[0].value;
-                                            $('#total-ongkir').text('Rp.' + ongkir.toLocaleString());
-                                            $('#grand-total').text('Rp.' + (subtotal + ongkir).toLocaleString());
-                                            $('#input-ongkir').val(ongkir);
-                                        } else {
-                                            alert("Layanan JNE Cargo tidak tersedia untuk rute ini.");
-                                        }
-                                    } else {
-                                        console.error("Data tidak memiliki struktur yang diharapkan:", data);
-                                        alert("Data ongkir tidak tersedia. Silakan coba lagi.");
-                                    }
-                                } catch (e) {
-                                    console.error("Error parsing JSON:", e);
-                                }
-                            },
-                            error: function(jqXHR, textStatus, errorThrown) {
-                                console.error("Error fetching cost data: ", textStatus, errorThrown);
-                            }
-                        });
-                    }
-                });
+                },
+                error: function(jqXHR, textStatus, errorThrown) {
+                    console.error("Error fetching city data: ", textStatus, errorThrown);
+                }
             });
+        } else {
+            $('#kabupaten').empty().append('<option value="">Pilih Kabupaten/Kota</option>');
+        }
+    });
+
+    // Menghitung ongkir berdasarkan total berat dan kabupaten/kota yang dipilih
+    $('#kabupaten').on('change', function() {
+        var city_id = $(this).val();
+        if(city_id) {
+            $.ajax({
+                type: "POST",
+                url: "<?php echo buildRajaOngkirUrl('cost'); ?>",
+                data: {
+                    origin: 445, // ID Kota Solo (Surakarta)
+                    destination: city_id,
+                    weight: totalWeight,
+                    courier: "jne"
+                },
+                success: function(data) {
+                    try {
+                        data = JSON.parse(data);
+                        if (data.rajaongkir && data.rajaongkir.results) {
+                            var cargoService = data.rajaongkir.results[0].costs.find(service => service.service === "JTR");
+                            
+                            if (cargoService) {
+                                var ongkir = cargoService.cost[0].value;
+                                $('#total-ongkir').text('Rp.' + ongkir.toLocaleString());
+                                $('#grand-total').text('Rp.' + (subtotal + ongkir).toLocaleString());
+                                $('#input-ongkir').val(ongkir);
+                            } else {
+                                alert("Layanan JNE Cargo tidak tersedia untuk rute ini.");
+                            }
+                        } else {
+                            console.error("Data tidak memiliki struktur yang diharapkan:", data);
+                            alert("Data ongkir tidak tersedia. Silakan coba lagi.");
+                        }
+                    } catch (e) {
+                        console.error("Error parsing JSON:", e);
+                    }
+                },
+                error: function(jqXHR, textStatus, errorThrown) {
+                    console.error("Error fetching cost data: ", textStatus, errorThrown);
+                }
+            });
+        }
+    });
+});
+
         </script>
 </body>
 

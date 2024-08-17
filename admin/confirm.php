@@ -1,34 +1,42 @@
 <?php
 include('../config.php');
 
-// Ambil bulan yang dipilih dari dropdown (default: tidak memfilter)
-$selected_month = filter_input(INPUT_GET, 'month', FILTER_SANITIZE_STRING);
-
-// Query untuk mendapatkan daftar bulan
-$month_query = mysqli_query($config, "SELECT DISTINCT DATE_FORMAT(tanggal_order, '%Y-%m') as month FROM tb_order ORDER BY month DESC");
-$months = mysqli_fetch_all($month_query, MYSQLI_ASSOC);
-
-// Filter data pesanan berdasarkan bulan yang dipilih
-$filter_query = "";
-if ($selected_month) {
-    $filter_query = " WHERE DATE_FORMAT(tanggal_order, '%Y-%m') = '" . mysqli_real_escape_string($config, $selected_month) . "'";
-}
-$query = mysqli_query($config, "SELECT * FROM tb_order" . $filter_query);
+// Query untuk mendapatkan pesanan yang belum selesai (Belum Bayar, Proses Verifikasi, Sudah Bayar, Pengiriman)
+$query = mysqli_query($config, "SELECT * FROM tb_order WHERE status_order != 'Selesai'");
 $data = mysqli_fetch_all($query, MYSQLI_ASSOC);
 
 // Cek aksi dari URL
-if (isset($_GET['acc']) || isset($_GET['pending']) || isset($_GET['hapus'])) {
+if (isset($_GET['acc']) || isset($_GET['pending']) || isset($_GET['hapus']) || isset($_GET['konfirmasi'])) {
     $order_id = filter_input(INPUT_GET, 'acc', FILTER_SANITIZE_STRING) 
         ?? filter_input(INPUT_GET, 'pending', FILTER_SANITIZE_STRING) 
-        ?? filter_input(INPUT_GET, 'hapus', FILTER_SANITIZE_STRING);
+        ?? filter_input(INPUT_GET, 'hapus', FILTER_SANITIZE_STRING)
+        ?? filter_input(INPUT_GET, 'konfirmasi', FILTER_SANITIZE_STRING);
 
     if (isset($_GET['acc'])) {
-        $action = mysqli_query($config, "UPDATE tb_order SET status_order ='Selesai' WHERE id_order = '" . mysqli_real_escape_string($config, $order_id) . "'");
+        $action = mysqli_query($config, "UPDATE tb_order SET status_order ='Selesai' WHERE id_order = '" . mysqli_real_escape_string($config, $order_id) . "' AND status_order = 'Pengiriman'");
+        if (!$action) {
+            echo "Error: " . mysqli_error($config);
+            exit;
+        }
     } elseif (isset($_GET['pending'])) {
         $action = mysqli_query($config, "UPDATE tb_order SET status_order ='Pending' WHERE id_order = '" . mysqli_real_escape_string($config, $order_id) . "'");
+        if (!$action) {
+            echo "Error: " . mysqli_error($config);
+            exit;
+        }
     } elseif (isset($_GET['hapus'])) {
         $action = mysqli_query($config, "DELETE FROM tb_order WHERE id_order = '" . mysqli_real_escape_string($config, $order_id) . "'");
         $action2 = mysqli_query($config, "DELETE FROM tb_keranjang WHERE id_keranjang = '" . mysqli_real_escape_string($config, $order_id) . "'");
+        if (!$action || !$action2) {
+            echo "Error: " . mysqli_error($config);
+            exit;
+        }
+    } elseif (isset($_GET['konfirmasi'])) {
+        $action = mysqli_query($config, "UPDATE tb_order SET status_order = 'Sudah Bayar' WHERE id_order = '" . mysqli_real_escape_string($config, $order_id) . "' AND status_order = 'Proses Verifikasi'");
+        if (!$action) {
+            echo "Error: " . mysqli_error($config);
+            exit;
+        }
     }
 
     // Redirect setelah aksi
@@ -39,24 +47,6 @@ if (isset($_GET['acc']) || isset($_GET['pending']) || isset($_GET['hapus'])) {
 
 <div class="container d-flex flex-column justify-content-center">
     <h4 class="text-center mt-3">List Pesanan</h4>
-    <!-- Dropdown filter bulan -->
-    <form method="get" class="mb-3">
-        <input type="hidden" name="page" value="check">
-        <div class="row">
-            <div class="col-md-4 offset-md-4">
-                <div class="input-group">
-                    <select name="month" class="form-select" onchange="this.form.submit()">
-                        <option value="">Pilih Bulan</option>
-                        <?php foreach ($months as $month) : ?>
-                            <option value="<?php echo htmlspecialchars($month['month']); ?>" <?php echo ($selected_month === $month['month']) ? 'selected' : ''; ?>>
-                                <?php echo date('F Y', strtotime($month['month'] . '-01')); ?>
-                            </option>
-                        <?php endforeach; ?>
-                    </select>
-                </div>
-            </div>
-        </div>
-    </form>
 
     <div class="table-responsive">
         <table class="table table-striped border">
@@ -70,8 +60,8 @@ if (isset($_GET['acc']) || isset($_GET['pending']) || isset($_GET['hapus'])) {
                     <th>Tanggal Order</th>
                     <th>Grand Total</th>
                     <th>Status</th>
-                    <th class="">Ubah Status</th>
-                    <th class="">Action</th>
+                    <th>Ubah Status</th>
+                    <th>Action</th>
                 </tr>
             </thead>
             <tbody>
@@ -88,6 +78,10 @@ if (isset($_GET['acc']) || isset($_GET['pending']) || isset($_GET['hapus'])) {
                             $class = "text-warning fw-bolder";
                         } else if ($row['status_order'] == "Pengiriman") {
                             $class = "text-primary fw-bolder";
+                        } else if ($row['status_order'] == "Proses Verifikasi") {
+                            $class = "text-info fw-bolder";
+                        } else if ($row['status_order'] == "Belum Bayar") {
+                            $class = "text-danger fw-bolder";
                         }
                         ?>
                         <td><?php echo $no++ . "."; ?></td>
@@ -96,14 +90,22 @@ if (isset($_GET['acc']) || isset($_GET['pending']) || isset($_GET['hapus'])) {
                         <td><?php echo htmlspecialchars($row['nohp_order']); ?></td>
                         <td><?php echo htmlspecialchars($row['resi_order']); ?></td>
                         <td><?php echo htmlspecialchars($tanggal_order); ?></td>
-                        <td>Rp.<?php echo number_format($row['after_ongkir_order'], 0, ',', '.'); ?></td>
+                        <td>Rp.<?php echo number_format($row['grandtotal_order'], 0, ',', '.'); ?></td>
                         <td class="<?php echo $class ?>"><?php echo htmlspecialchars($row['status_order']); ?></td>
                         <td>
-                            <a href="?page=check&acc=<?php echo urlencode($row['id_order']); ?>" class="btn btn-success mb-1" onclick="return confirm('Anda yakin mengubah status order ini?');">Selesai</a>
-                            <button type="button" class="btn btn-primary mb-1" data-bs-toggle="modal" data-bs-target="#resiModal" data-id="<?php echo $row['id_order']; ?>">
-                                Pengiriman
-                            </button>
-                            <a href="?page=check&pending=<?php echo urlencode($row['id_order']); ?>" class="btn btn-warning mb-1" onclick="return confirm('Anda yakin mengubah status order ini?');">Pending</a>
+                            <?php if ($row['status_order'] == "Sudah Bayar" || $row['status_order'] == "Pengiriman") : ?>
+                                <a href="?page=check&acc=<?php echo urlencode($row['id_order']); ?>" class="btn btn-success mb-1" onclick="return confirm('Anda yakin mengubah status order ini menjadi Selesai?');">Selesai</a>
+                                <?php if ($row['status_order'] == "Sudah Bayar") : ?>
+                                    <button type="button" class="btn btn-primary mb-1" data-bs-toggle="modal" data-bs-target="#resiModal" data-id="<?php echo $row['id_order']; ?>">
+                                        Pengiriman
+                                    </button>
+                                <?php endif; ?>
+                            <?php elseif ($row['status_order'] == "Proses Verifikasi") : ?>
+                                <a href="?page=check&konfirmasi=<?php echo urlencode($row['id_order']); ?>" class="btn btn-warning mb-1" onclick="return confirm('Anda yakin ingin mengonfirmasi pembayaran?');">Konfirmasi Pembayaran</a>
+                                <button type="button" class="btn btn-secondary mb-1" data-bs-toggle="modal" data-bs-target="#buktiModal" data-id="<?php echo $row['id_order']; ?>" data-bukti="<?php echo urlencode($row['id_order']) . '_' . $row['bukti_bayar']; ?>">
+                                    Lihat Bukti
+                                </button>
+                            <?php endif; ?>
                         </td>
                         <td>
                             <a href="./generate_pdf.php?orderid=<?php echo urlencode($row['id_order']); ?>" target="_blank" class="btn btn-info mb-1">Cetak PDF</a>
@@ -113,9 +115,6 @@ if (isset($_GET['acc']) || isset($_GET['pending']) || isset($_GET['hapus'])) {
                 <?php endforeach; ?>
             </tbody>
         </table>
-        <div class="mb-3 text-center">
-        <a href="./generate_pdf_all.php?month=<?php echo urlencode($selected_month); ?>" target="_blank"class="btn btn-primary">Cetak Laporan PDF</a>
-    </div>
     </div>
 </div>
 
@@ -144,12 +143,34 @@ if (isset($_GET['acc']) || isset($_GET['pending']) || isset($_GET['hapus'])) {
     </div>
 </div>
 
+<!-- Modal untuk melihat bukti transfer -->
+<div class="modal fade" id="buktiModal" tabindex="-1" aria-labelledby="buktiModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="buktiModalLabel">Bukti Transfer</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <img src="" id="bukti-img" class="img-fluid" alt="Bukti Transfer">
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <?php
 // Proses input nomor resi dan update status menjadi Pengiriman
 if (isset($_POST['submitResi'])) {
     $order_id = mysqli_real_escape_string($config, filter_input(INPUT_POST, 'order_id', FILTER_SANITIZE_STRING));
     $resi = mysqli_real_escape_string($config, filter_input(INPUT_POST, 'resi', FILTER_SANITIZE_STRING));
-    $action = mysqli_query($config, "UPDATE tb_order SET status_order ='Pengiriman', resi_order='$resi' WHERE id_order = '$order_id'");
+    $action = mysqli_query($config, "UPDATE tb_order SET status_order ='Pengiriman', resi_order='$resi' WHERE id_order = '$order_id' AND status_order = 'Sudah Bayar'");
+    if (!$action) {
+        echo "Error: " . mysqli_error($config);
+        exit;
+    }
     header('Location: ?page=check');
     exit();
 }
@@ -162,5 +183,13 @@ if (isset($_POST['submitResi'])) {
         var orderId = button.getAttribute('data-id');
         var modalOrderInput = resiModal.querySelector('#order_id');
         modalOrderInput.value = orderId;
+    });
+
+    var buktiModal = document.getElementById('buktiModal');
+    buktiModal.addEventListener('show.bs.modal', function(event) {
+        var button = event.relatedTarget;
+        var buktiImgSrc = "../assets/bukti_bayar/" + button.getAttribute('data-bukti');
+        var buktiImg = buktiModal.querySelector('#bukti-img');
+        buktiImg.src = buktiImgSrc;
     });
 </script>

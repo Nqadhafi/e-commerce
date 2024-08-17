@@ -1,114 +1,95 @@
 <?php
-require_once '../config.php';
-require_once '../vendor/autoload.php'; // Path ke autoload.php dari dompdf
-
+require_once '../vendor/autoload.php'; // Path to dompdf autoload
 use Dompdf\Dompdf;
 use Dompdf\Options;
 
-// Ambil bulan dari query parameter
+include('../config.php');
+
+// Ambil bulan yang dipilih dari URL
 $selected_month = filter_input(INPUT_GET, 'month', FILTER_SANITIZE_STRING);
 
-// Filter data pesanan berdasarkan bulan yang dipilih
-$filter_query = "";
+// Buat query untuk mendapatkan semua order yang selesai di bulan yang dipilih atau seluruh bulan jika tidak dipilih
+$query_str = "SELECT * FROM tb_order WHERE status_order = 'Selesai'";
 if ($selected_month) {
-    $filter_query = " WHERE DATE_FORMAT(tanggal_order, '%Y-%m') = '" . mysqli_real_escape_string($config, $selected_month) . "'";
-}
-$query = mysqli_query($config, "SELECT * FROM tb_order" . $filter_query);
-
-if (!$query) {
-    die('Query Error: ' . mysqli_error($config));
+    $query_str .= " AND DATE_FORMAT(tanggal_order, '%Y-%m') = '" . mysqli_real_escape_string($config, $selected_month) . "'";
 }
 
-$data = mysqli_fetch_all($query, MYSQLI_ASSOC);
+$query = mysqli_query($config, $query_str);
+$orders = mysqli_fetch_all($query, MYSQLI_ASSOC);
 
-// Hitung grandtotal
-$grandtotal = 0;
-foreach ($data as $row) {
-    $grandtotal += $row['after_ongkir_order'];
+// Jika tidak ada pesanan, berikan pesan bahwa tidak ada data yang ditemukan
+if (empty($orders)) {
+    echo "Tidak ada data pesanan yang selesai untuk bulan yang dipilih.";
+    exit;
 }
 
-// Inisialisasi dompdf
+$total_grandtotal = 0;
+
+$html = '
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        margin: 20px;
+    }
+    h1 {
+        text-align: center;
+        margin-bottom: 40px;
+    }
+    .summary-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 20px;
+    }
+    .summary-table th, .summary-table td {
+        border: 1px solid #ddd;
+        padding: 8px;
+    }
+    .summary-table th {
+        background-color: #f2f2f2;
+        text-align: left;
+    }
+</style>
+';
+
+$month_title = $selected_month ? date('F Y', strtotime($selected_month . '-01')) : 'Semua Bulan';
+$html .= '<h1>Laporan Pesanan Selesai - ' . $month_title . '</h1>';
+$html .= '<table class="summary-table">';
+$html .= '<thead><tr><th>Order ID</th><th>Nama Customer</th><th>Email</th><th>No. HP</th><th>Alamat</th><th>Kabupaten</th><th>Provinsi</th><th>Tanggal Order</th><th>Grand Total</th></tr></thead>';
+$html .= '<tbody>';
+
+foreach ($orders as $order) {
+    $tanggal_order = date('d-m-Y', strtotime($order['tanggal_order']));
+    $total_grandtotal += $order['grandtotal_order'];
+    $html .= '<tr>';
+    $html .= '<td>' . htmlspecialchars($order['id_order']) . '</td>';
+    $html .= '<td>' . htmlspecialchars($order['namacust_order']) . '</td>';
+    $html .= '<td>' . htmlspecialchars($order['email_order']) . '</td>';
+    $html .= '<td>' . htmlspecialchars($order['nohp_order']) . '</td>';
+    $html .= '<td>' . htmlspecialchars($order['alamat_order']) . '</td>';
+    $html .= '<td>' . htmlspecialchars($order['kabupaten_order']) . '</td>';
+    $html .= '<td>' . htmlspecialchars($order['provinsi_order']) . '</td>';
+    $html .= '<td>' . htmlspecialchars($tanggal_order) . '</td>';
+    $html .= '<td>Rp. ' . number_format($order['grandtotal_order'], 0, ',', '.') . '</td>';
+    $html .= '</tr>';
+}
+
+$html .= '</tbody>';
+$html .= '</table>';
+
+$html .= '<h3>Total Keseluruhan: Rp. ' . number_format($total_grandtotal, 0, ',', '.') . '</h3>';
+
+// Setup Dompdf
 $options = new Options();
-$options->set('defaultFont', 'Helvetica');
+$options->set('isHtml5ParserEnabled', true);
 $dompdf = new Dompdf($options);
-
-// Tentukan judul berdasarkan parameter bulan
-if ($selected_month) {
-    $month_name = date('F Y', strtotime($selected_month . '-01'));
-    $title = 'Laporan Pesanan Bulan ' . $month_name;
-} else {
-    $title = 'Laporan Semua Transaksi';
-}
-
-// HTML untuk laporan PDF
-$html = '<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="utf-8">
-    <title>' . $title . '</title>
-    <style>
-        body { font-family: Arial, sans-serif; margin: 20px; }
-        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
-        table, th, td { border: 1px solid black; }
-        th, td { padding: 8px; text-align: left; }
-        th { background-color: #f2f2f2; }
-        .text-right { text-align: right; }
-        .text-left { text-align: left; }
-        .font-weight-bold { font-weight: bold; }
-    </style>
-</head>
-<body>
-<h1>Toko Onlineku</h1>
-    <h2>' . $title . '</h2>
-    <table>
-        <thead>
-            <tr>
-                <th>No.</th>
-                <th>Order ID</th>
-                <th>Nama Customer</th>
-                <th>No HP</th>
-                <th>Nomor Resi</th>
-                <th>Tanggal Order</th>
-                <th>Sub Total + Ongkir</th>
-                <th>Status</th>
-            </tr>
-        </thead>
-        <tbody>';
-
-$no = 1;
-foreach ($data as $row) {
-    $tanggal_order = date('d-m-Y', strtotime($row['tanggal_order']));
-    $html .= '<tr>
-                <td>' . $no++ . '</td>
-                <td>' . htmlspecialchars($row['id_order']) . '</td>
-                <td>' . htmlspecialchars($row['namacust_order']) . '</td>
-                <td>' . htmlspecialchars($row['nohp_order']) . '</td>
-                <td>' . htmlspecialchars($row['resi_order']) . '</td>
-                <td>' . $tanggal_order . '</td>
-                <td>Rp.' . number_format($row['after_ongkir_order'], 0, ',', '.') . '</td>
-                <td>' . htmlspecialchars($row['status_order']) . '</td>
-              </tr>';
-}
-
-$html .= '   
-<tr>
-    <td colspan="6" class="text-right font-weight-bold">Total Transaksi</td>
-    <td colspan="2" class="font-weight-bold text-right">Rp.' . number_format($grandtotal, 0, ',', '.') . '</td>
-</tr>
-</tbody>
-    </table>
-</body>
-</html>';
-
-// Load HTML ke dompdf
 $dompdf->loadHtml($html);
 
-// (Opsional) Atur ukuran dan orientasi kertas
+// (Optional) Setup the paper size and orientation
 $dompdf->setPaper('A4', 'landscape');
 
-// Render PDF (convert HTML to PDF)
+// Render the HTML as PDF
 $dompdf->render();
 
-// Output the generated PDF (streaming)
-$dompdf->stream('Laporan_Pesanan.pdf', array('Attachment' => 0));
+// Output the generated PDF (force download)
+$dompdf->stream('laporan_pesanan_' . ($selected_month ?: 'semua_bulan') . '.pdf', array('Attachment' => 0));
 ?>

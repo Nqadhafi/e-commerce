@@ -15,12 +15,8 @@ if (!$query) {
 $order = mysqli_fetch_assoc($query);
 
 if ($order) {
-    // Ambil ID Ongkir dari tb_order
-    $id_ongkir = $order['id_ongkir'];
-
-    // Query untuk mendapatkan biaya ongkir dari tb_ongkir berdasarkan id_ongkir
-    $query_ongkir = mysqli_query($config, "SELECT jumlah_ongkir FROM tb_ongkir WHERE id_ongkir = '$id_ongkir'");
-    $ongkir = mysqli_fetch_assoc($query_ongkir)['jumlah_ongkir'];
+    // Mengambil nilai ongkir langsung dari tabel tb_order
+    $ongkir = $order['ongkir_order'];
 
     // Query untuk mendapatkan detail produk dalam pesanan
     $query_items = mysqli_query($config, "SELECT p.nama_produk, p.harga_produk, k.qty_keranjang 
@@ -35,8 +31,31 @@ if ($order) {
     $items = mysqli_fetch_all($query_items, MYSQLI_ASSOC);
 
     // Format tanggal menjadi dd-mm-yyyy
-    $date = new DateTime($order['tanggal_order']); // Membuat objek DateTime
-    $formatted_date = $date->format('d-m-Y'); // Format tanggal
+    $date = new DateTime($order['tanggal_order']);
+    $formatted_date = $date->format('d-m-Y');
+
+
+    // Mapping status order ke class dan deskripsi yang sesuai
+    switch ($order['status_order']) {
+        case 'Belum Bayar':
+            $class = "text-danger fw-bolder";
+            break;
+        case 'Proses Verifikasi':
+            $class = "text-warning fw-bolder";
+            break;
+        case 'Sudah Bayar':
+            $class = "text-success fw-bolder";
+            break;
+        case 'Pengiriman':
+            $class = "text-primary fw-bolder";
+            break;
+        case 'Selesai':
+            $class = "text-success fw-bolder";
+            break;
+        default:
+            $class = "text-muted fw-bolder";
+            break;
+    }
 }
 ?>
 
@@ -55,15 +74,6 @@ if ($order) {
             <input class="btn btn-success btn-outline-secondary text-white w-25" type="submit" value="Cari Order">
         </form>
         <?php if ($order) : ?>
-            <?php
-            if ($order['status_order'] == "Selesai") {
-                $class = "text-success fw-bolder";
-            } elseif ($order['status_order'] == "Pending") {
-                $class = "text-warning fw-bolder";
-            } elseif ($order['status_order'] == "Pengiriman") {
-                $class = "text-primary fw-bolder";
-            }
-            ?>
             <div class="invoice-container">
                 <div class="invoice-header">
                     <h2 class="text-center">Detail Pesanan</h2>
@@ -73,10 +83,12 @@ if ($order) {
                         <p class="col-md-6"><strong>Order ID:</strong> <?php echo htmlspecialchars($order['id_order']); ?></p>
                         <p class="col-md-6"><strong>Tanggal Transaksi:</strong> <?php echo htmlspecialchars($formatted_date); ?></p>
                         <p class="col-md-6"><strong>Nomor Resi:</strong> <?php echo htmlspecialchars($order['resi_order']); ?></p>
-                        <p class="col-md-6"><strong>Nama Customer:</strong> <?php echo htmlspecialchars($order['namacust_order']); ?></p>
+                        <p class="col-md-6"><strong>Nama Customer:</strong> <?php echo htmlspecialchars($order['namacust_order']) ; ?></p>
                         <p class="col-md-6"><strong>Email:</strong> <?php echo htmlspecialchars($order['email_order']); ?></p>
                         <p class="col-md-6"><strong>No. HP:</strong> <?php echo htmlspecialchars($order['nohp_order']); ?></p>
                         <p class="col-md-6"><strong>Alamat:</strong> <?php echo htmlspecialchars($order['alamat_order']); ?></p>
+                        <p class="col-md-6"><strong>Kabupaten:</strong> <?php echo htmlspecialchars($order['kabupaten_order']); ?></p>
+                        <p class="col-md-6"><strong>Provinsi:</strong> <?php echo htmlspecialchars($order['provinsi_order']); ?></p>
                         <p class="col-md-6"><strong>Status:</strong> <span class="<?php echo $class; ?>"><?php echo htmlspecialchars($order['status_order']); ?></span></p>
                     </div>
                 </div>
@@ -93,10 +105,10 @@ if ($order) {
                         </thead>
                         <tbody>
                             <?php
-                            $grandtotal = 0; // Inisialisasi grandtotal di luar loop
+                            $grandtotal = 0; 
                             foreach ($items as $item) :
                                 $total_produk = $item['harga_produk'] * $item['qty_keranjang'];
-                                $grandtotal += $total_produk; // Tambahkan total_produk ke grandtotal
+                                $grandtotal += $total_produk;
                             ?>
                                 <tr>
                                     <td><?php echo htmlspecialchars($item['nama_produk']); ?></td>
@@ -122,9 +134,35 @@ if ($order) {
                 </div>
                 <div class="invoice-footer text-center">
                     <h4 class="mb-3">Terima kasih atas pembelian Anda!</h4>
+                    <?php if ($order['status_order'] == 'Belum Bayar') : ?>
+                    <p>Silakan transfer pembayaran ke rekening berikut:</p>
+                    <ul>
+                        <?php if ($order['metode_pembayaran'] == 'BRI') : ?>
+                        <strong>BRI:</strong> <?php echo $rekening_bri; ?>
+                        <?php else : ?>
+                       <strong>BCA:</strong> <?php echo $rekening_bca; ?>
+                        <?php endif; ?>
+                    </ul>
+                    <?php endif; ?>
+                    <?php if ($order['status_order'] === 'Belum Bayar') : ?>
+                        <form action="upload_bukti.php" method="post" enctype="multipart/form-data" class="mt-3">
+                            <div class="mb-3 ">
+                                <label for="bukti_bayar" class="form-label">Upload Bukti Pembayaran:</label>
+                                <input class="form-control" type="file" id="bukti_bayar" name="bukti_bayar" required>
+                            </div>
+                            <input type="hidden" name="order_id" value="<?php echo $order['id_order']; ?>">
+                            <button type="submit" class="btn btn-warning mb-2">Upload Bukti</button>
+                        </form>
+                    <?php elseif ($order['status_order'] === 'Proses Verifikasi') : ?>
+                        <p>Bukti pembayaran telah diupload dan sedang dalam proses verifikasi.</p>
+                        <p><a href="./assets/bukti_bayar/<?php echo urlencode($order['id_order']) . "_" . $order['bukti_bayar']; ?>" target="_blank">Lihat Bukti Pembayaran</a></p>
+                    <?php elseif ($order['status_order'] === 'Sudah Bayar') : ?>
+                        <p>Pembayaran telah diverifikasi.</p>
+                        <p><a href="./assets/bukti_bayar/<?php echo urlencode($order['id_order']) . "_" . $order['bukti_bayar']; ?>" target="_blank">Lihat Bukti Pembayaran</a></p>
+                    <?php endif; ?>
                     <?php
                     $id_order_wa = substr($order['id_order'], 1);
-                    $whatsapp = "https://wa.me/". $no_whatsapp ."?text=Halo%20min!%20Tolong%20cek%20pesanan%20dengan%20order%20ID%20%23". $id_order_wa ."%20ya!";
+                    $whatsapp = "https://wa.me/" . $no_whatsapp . "?text=Halo%20min!%20Tolong%20cek%20pesanan%20dengan%20order%20ID%20%23" . urlencode($id_order_wa) . "%20ya!";
                     ?>
                     <div class="d-flex justify-content-center gap-3">
                         <div class="text-center">
