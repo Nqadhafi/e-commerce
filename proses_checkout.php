@@ -3,7 +3,7 @@ include('./config.php');
 
 // Fungsi untuk mendapatkan nama provinsi berdasarkan ID
 function getProvinceName($province_id) {
-    $url = buildRajaOngkirUrl("province", ['id' => $province_id]);
+    $url = buildRajaOngkirUrl("province", []);
     $response = getCurlResponse($url);
     $data = json_decode($response, true);
 
@@ -11,18 +11,21 @@ function getProvinceName($province_id) {
         echo "<script>alert('Gagal mengambil data provinsi. Response dari API tidak valid.');</script>";
         return null;
     }
-    
-    if (!isset($data['rajaongkir']['results'])) {
-        echo "<script>alert('Data provinsi tidak ditemukan dalam respons. Cek format JSON.');</script>";
-        return null;
-    }
 
-    return isset($data['rajaongkir']['results'][0]['province']) ? $data['rajaongkir']['results'][0]['province'] : null;
+    // Mencari nama provinsi berdasarkan ID
+    foreach ($data['rajaongkir']['results'] as $province) {
+        if ($province['province_id'] == $province_id) {
+            return $province['province'];
+        }
+    }
+    
+    echo "<script>alert('Provinsi dengan ID tersebut tidak ditemukan.');</script>";
+    return null;
 }
 
 // Fungsi untuk mendapatkan nama kota berdasarkan ID
 function getCityName($city_id) {
-    $url = buildRajaOngkirUrl("city", ['id' => $city_id]);
+    $url = buildRajaOngkirUrl("city", ['province' => '']);
     $response = getCurlResponse($url);
     $data = json_decode($response, true);
 
@@ -30,13 +33,16 @@ function getCityName($city_id) {
         echo "<script>alert('Gagal mengambil data kabupaten. Response dari API tidak valid.');</script>";
         return null;
     }
-    
-    if (!isset($data['rajaongkir']['results'])) {
-        echo "<script>alert('Data kabupaten tidak ditemukan dalam respons. Cek format JSON.');</script>";
-        return null;
+
+    // Mencari nama kota berdasarkan ID
+    foreach ($data['rajaongkir']['results'] as $city) {
+        if ($city['city_id'] == $city_id) {
+            return $city['city_name'];
+        }
     }
 
-    return isset($data['rajaongkir']['results'][0]['city_name']) ? $data['rajaongkir']['results'][0]['city_name'] : null;
+    echo "<script>alert('Kabupaten dengan ID tersebut tidak ditemukan.');</script>";
+    return null;
 }
 
 // Generate unique order ID
@@ -88,8 +94,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         '$email',
         '$nohp',
         '$alamat',
-        '$provinsi',
-        '$kabupaten',
+        '$provinsi', -- Simpan nama provinsi
+        '$kabupaten', -- Simpan nama kabupaten
         '$subtotal',
         '$total_weight',
         '$ongkir',
@@ -146,4 +152,5 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 } else {
     echo "Tidak ada data yang dikirim.";
 }
+
 ?>
