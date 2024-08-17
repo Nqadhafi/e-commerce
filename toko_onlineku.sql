@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Aug 15, 2024 at 06:08 PM
+-- Generation Time: Aug 17, 2024 at 07:13 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.0.30
 
@@ -61,17 +61,22 @@ CREATE TABLE `tb_keranjang` (
 --
 
 CREATE TABLE `tb_order` (
-  `id_order` varchar(50) NOT NULL,
-  `resi_order` varchar(50) NOT NULL,
-  `namacust_order` varchar(50) NOT NULL,
-  `email_order` varchar(50) NOT NULL,
-  `nohp_order` bigint(20) NOT NULL,
-  `alamat_order` varchar(100) NOT NULL,
-  `tanggal_order` date NOT NULL DEFAULT current_timestamp(),
-  `id_ongkir` int(11) NOT NULL,
-  `grandtotal_order` bigint(20) NOT NULL,
-  `after_ongkir_order` bigint(20) NOT NULL,
-  `status_order` varchar(30) NOT NULL
+  `id_order` varchar(20) NOT NULL,
+  `namacust_order` varchar(255) NOT NULL,
+  `email_order` varchar(255) NOT NULL,
+  `nohp_order` varchar(20) NOT NULL,
+  `alamat_order` text NOT NULL,
+  `provinsi_order` varchar(255) NOT NULL,
+  `kabupaten_order` varchar(255) NOT NULL,
+  `subtotal_order` decimal(15,2) NOT NULL,
+  `total_weight_order` int(11) NOT NULL,
+  `ongkir_order` decimal(15,2) NOT NULL,
+  `resi_order` varchar(30) DEFAULT NULL,
+  `grandtotal_order` decimal(15,2) NOT NULL,
+  `metode_pembayaran` varchar(50) NOT NULL,
+  `status_order` varchar(50) DEFAULT 'Pending',
+  `tanggal_order` timestamp NOT NULL DEFAULT current_timestamp(),
+  `bukti_bayar` varchar(255) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -104,8 +109,7 @@ ALTER TABLE `tb_admin`
 -- Indexes for table `tb_keranjang`
 --
 ALTER TABLE `tb_keranjang`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `id` (`id`);
+  ADD PRIMARY KEY (`id`);
 
 --
 -- Indexes for table `tb_order`
@@ -133,13 +137,13 @@ ALTER TABLE `tb_admin`
 -- AUTO_INCREMENT for table `tb_keranjang`
 --
 ALTER TABLE `tb_keranjang`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=63;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT for table `tb_produk`
 --
 ALTER TABLE `tb_produk`
-  MODIFY `id_produk` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=26;
+  MODIFY `id_produk` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=29;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
