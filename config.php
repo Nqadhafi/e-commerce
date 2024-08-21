@@ -26,7 +26,7 @@ mysqli_set_charset($config, 'utf8mb4');
 // Cek apakah fungsi buildRajaOngkirUrl sudah ada, jika tidak ada, deklarasikan
 if (!function_exists('buildRajaOngkirUrl')) {
     function buildRajaOngkirUrl($endpoint, $params = []) {
-        $base_url = "" . urlencode($endpoint); //ganti dengan path url proxy
+        $base_url = "http://localhost/notepro_shop/rajaongkir_proxy.php?endpoint=" . urlencode($endpoint); //ganti dengan path url proxy
         
         // Jika $params bukan array, maka ubah menjadi array
         if (!is_array($params)) {

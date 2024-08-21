@@ -134,6 +134,8 @@ if ($order) {
                 </div>
                 <div class="invoice-footer text-center">
                     <h4 class="mb-3">Terima kasih atas pembelian Anda!</h4>
+                    <h4 class="mb-3"><strong>Order ID:</strong> <?php echo htmlspecialchars($order['id_order']); ?></h4>
+                    <hr>
                     <?php if ($order['status_order'] == 'Belum Bayar') : ?>
                     <p>Silakan transfer pembayaran ke rekening berikut:</p>
                     <ul>

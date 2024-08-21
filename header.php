@@ -47,6 +47,9 @@ if (isset($_SESSION['keranjang'])) {
                         <a class="nav-link active text-white" aria-current="page" href="./">Home</a>
                     </li>
                     <li class="nav-item p-1">
+                        <a class="nav-link active text-white" aria-current="page" href="./cara_order.php">Cara Order</a>
+                    </li>
+                    <li class="nav-item p-1">
                         <a class="nav-link text-white" href="check.php">Check Status</a>
                     </li>
                     
@@ -61,6 +64,7 @@ if (isset($_SESSION['keranjang'])) {
                         </a>
                     </li>
                     <!-- Cart end -->
+                  
                 </ul>
                 </div>
 
