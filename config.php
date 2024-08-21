@@ -15,7 +15,7 @@ $alamat_toko = "Depan SMK Batik 1, JL. Papagan Kleco, Jl. Makam H., Pajang, Kec.
 $deskripsi_toko = "Menyediakan segala kebutuhan sparepart CCTV & Projektor";
 $rekening_bri = "12345789 a.n Agus";
 $rekening_bca = "4567898 a.n Agus";
-$api_rajaongkir = "";
+$api_rajaongkir = ""; //isi api mu
 
 if (!$config) {
     die("Error, tidak dapat terkoneksi dengan database.");

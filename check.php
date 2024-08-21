@@ -137,14 +137,16 @@ if ($order) {
                     <h4 class="mb-3"><strong>Order ID:</strong> <?php echo htmlspecialchars($order['id_order']); ?></h4>
                     <hr>
                     <?php if ($order['status_order'] == 'Belum Bayar') : ?>
-                    <p>Silakan transfer pembayaran ke rekening berikut:</p>
+                        <div class="p-2 bg-white border border-black rounded">
+                    <p><h5>Silakan transfer pembayaran ke rekening berikut:</h5></p>
                     <ul>
                         <?php if ($order['metode_pembayaran'] == 'BRI') : ?>
-                        <strong>BRI:</strong> <?php echo $rekening_bri; ?>
+                        <h4><strong>BRI:</strong> <?php echo $rekening_bri; ?></h4>
                         <?php else : ?>
-                       <strong>BCA:</strong> <?php echo $rekening_bca; ?>
+                      <h4> <strong>BCA:</strong> <?php echo $rekening_bca; ?></h4>
                         <?php endif; ?>
                     </ul>
+                    </div>
                     <?php endif; ?>
                     <?php if ($order['status_order'] === 'Belum Bayar') : ?>
                         <form action="upload_bukti.php" method="post" enctype="multipart/form-data" class="mt-3">
