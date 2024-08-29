@@ -26,29 +26,31 @@ if(isset($_POST['transaksi'])){
     case ('Tambah ke Keranjang'):
         $qty = $_POST['qty'];
         
-        if (!isset($_SESSION['keranjang'])) {
-            $_SESSION['keranjang'] = [];
-        }
-    
-        if (isset($_SESSION['keranjang'][$id])) {
-            $_SESSION['keranjang'][$id] += $qty;
-            
+        if ($qty > $stok_produk) {
+            echo "<script>
+                alert('Jumlah produk melebihi stok yang tersedia.');
+                window.location.href='./product.php?id=" . $id . "';
+            </script>";
         } else {
-            $_SESSION['keranjang'][$id] = $qty;
+            if (!isset($_SESSION['keranjang'])) {
+                $_SESSION['keranjang'] = [];
+            }
+        
+            if (isset($_SESSION['keranjang'][$id])) {
+                $_SESSION['keranjang'][$id] += $qty;
+            } else {
+                $_SESSION['keranjang'][$id] = $qty;
+            }
+            echo "<script>
+                alert('Produk berhasil ditambahkan');
+                window.location.href='./product.php?id=" . $id . "';
+            </script>";
         }
-        echo "<script>
-        alert('Produk berhasil ditambahkan');
-        window.location.href='./product.php?id=" . $id . "';
-    </script>";
-    
         break;
 
-        case('Checkout'):
-            echo "Uwawww";
-            break;
+    }
+}
 
-}
-}
 
 ?>
 
@@ -70,7 +72,7 @@ if(isset($_POST['transaksi'])){
             <hr>
             <span class="d-flex">
             <p class="fw-bold pe-1">Berat Produk: </p>
-            <p><?php echo $berat_produk ?></p></span>
+            <p><?php echo $berat_produk ?> gram</p></span>
             <p class="card-text fw-semibold">Deskripsi produk :</p>
             <p class="card-text"><?php echo $deskripsi_produk ?></p>
             <!-- form -->

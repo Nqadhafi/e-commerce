@@ -25,6 +25,20 @@ if (isset($_GET['acc']) || isset($_GET['pending']) || isset($_GET['hapus']) || i
             exit;
         }
     } elseif (isset($_GET['hapus'])) {
+        // Ambil data produk dari tb_keranjang sebelum menghapus pesanan
+        $query_items = mysqli_query($config, "SELECT id_produk, qty_keranjang FROM tb_keranjang WHERE id_keranjang = '" . mysqli_real_escape_string($config, $order_id) . "'");
+        $items = mysqli_fetch_all($query_items, MYSQLI_ASSOC);
+        
+        // Kembalikan stok produk
+        foreach ($items as $item) {
+            $id_produk = $item['id_produk'];
+            $qty_keranjang = $item['qty_keranjang'];
+            
+            // Update stok produk
+            mysqli_query($config, "UPDATE tb_produk SET stok_produk = stok_produk + $qty_keranjang WHERE id_produk = '$id_produk'");
+        }
+
+        // Hapus data pesanan dan keranjang
         $action = mysqli_query($config, "DELETE FROM tb_order WHERE id_order = '" . mysqli_real_escape_string($config, $order_id) . "'");
         $action2 = mysqli_query($config, "DELETE FROM tb_keranjang WHERE id_keranjang = '" . mysqli_real_escape_string($config, $order_id) . "'");
         if (!$action || !$action2) {
@@ -44,6 +58,7 @@ if (isset($_GET['acc']) || isset($_GET['pending']) || isset($_GET['hapus']) || i
     exit();
 }
 ?>
+
 
 <div class="container d-flex flex-column justify-content-center">
     <h4 class="text-center mt-3">List Pesanan</h4>

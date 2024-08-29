@@ -43,18 +43,18 @@ if (isset($_SESSION['keranjang'])) {
                 <div class="d-flex flex-column">
                     <div class="justify-content-center  align-self-center mb-1">
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0 ">
-                    <li class="nav-item p-1">
+                    <li class="nav-item p-2 fs-5 fw-bold">
                         <a class="nav-link active text-white" aria-current="page" href="./">Home</a>
                     </li>
-                    <li class="nav-item p-1">
+                    <li class="nav-item p-2 fs-5 fw-bold">
                         <a class="nav-link active text-white" aria-current="page" href="./cara_order.php">Cara Order</a>
                     </li>
-                    <li class="nav-item p-1">
+                    <li class="nav-item p-2 fs-5 fw-bold">
                         <a class="nav-link text-white" href="check.php">Check Status</a>
                     </li>
                     
                     <!-- Cart -->
-                    <li class="nav-item p-1 ">
+                    <li class="nav-item p-2 fs-5 fw-bold">
                         <a class="nav-link d-flex text-white" href="./cart.php" id="cart">
                         <div class="icon-cart me-1">
                         <img src="./assets/img/cart.png" alt="">

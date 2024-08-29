@@ -19,7 +19,7 @@ if ($order) {
     $ongkir = $order['ongkir_order'];
 
     // Query untuk mendapatkan detail produk dalam pesanan
-    $query_items = mysqli_query($config, "SELECT p.nama_produk, p.harga_produk, k.qty_keranjang 
+    $query_items = mysqli_query($config, "SELECT p.nama_produk, p.harga_produk, p.id_produk, k.qty_keranjang 
                                           FROM tb_keranjang k
                                           JOIN tb_produk p ON k.id_produk = p.id_produk
                                           WHERE k.id_keranjang = '$order_id'");
@@ -34,6 +34,30 @@ if ($order) {
     $date = new DateTime($order['tanggal_order']);
     $formatted_date = $date->format('d-m-Y');
 
+    // Hitung waktu tersisa 48 jam dari tanggal order
+    $deadline = $date->modify('+48 hours');
+    $now = new DateTime();
+    $timeLeft = $deadline->getTimestamp() - $now->getTimestamp();
+
+    // Jika waktu habis dan status masih "Belum Bayar", hapus order
+    if ($timeLeft <= 0 && $order['status_order'] === 'Belum Bayar') {
+        // Kembalikan stok produk sebelum menghapus pesanan
+        foreach ($items as $item) {
+            $id_produk = $item['id_produk'];
+            $qty_keranjang = $item['qty_keranjang'];
+            
+            // Update stok produk
+            mysqli_query($config, "UPDATE tb_produk SET stok_produk = stok_produk + $qty_keranjang WHERE id_produk = '$id_produk'");
+        }
+
+        // Hapus data order dari tabel `tb_order`
+        mysqli_query($config, "DELETE FROM tb_order WHERE id_order = '$order_id'");
+        // Hapus data terkait dari tabel `tb_keranjang`
+        mysqli_query($config, "DELETE FROM tb_keranjang WHERE id_keranjang = '$order_id'");
+
+        echo "<script>alert('Waktu pembayaran Anda sudah habis. Pesanan telah dibatalkan dan informasi dihapus.'); window.location.href='./index.php';</script>";
+        exit;
+    }
 
     // Mapping status order ke class dan deskripsi yang sesuai
     switch ($order['status_order']) {
@@ -65,6 +89,41 @@ if ($order) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Detail Pesanan</title>
+    <script>
+        // Fungsi JavaScript untuk menampilkan hitung mundur
+        function startCountdown(duration) {
+            var timer = duration, days, hours, minutes, seconds;
+            var countdownElement = document.getElementById('countdown-timer');
+            var interval = setInterval(function () {
+                days = parseInt(timer / (60 * 60 * 24), 10);
+                hours = parseInt((timer % (60 * 60 * 24)) / (60 * 60), 10);
+                minutes = parseInt((timer % (60 * 60)) / 60, 10);
+                seconds = parseInt(timer % 60, 10);
+
+                days = days < 10 ? "0" + days : days;
+                hours = hours < 10 ? "0" + hours : hours;
+                minutes = minutes < 10 ? "0" + minutes : minutes;
+                seconds = seconds < 10 ? "0" + seconds : seconds;
+
+                countdownElement.textContent = days + "hari " + hours + "jam " + minutes + "menit " + seconds + "detik";
+
+                if (--timer < 0) {
+                    clearInterval(interval);
+                    countdownElement.textContent = "Waktu habis! Silakan hubungi admin untuk informasi lebih lanjut.";
+                }
+            }, 1000);
+        }
+
+        // Memulai hitung mundur saat halaman selesai dimuat
+        window.onload = function () {
+            var timeLeft = <?php echo $timeLeft; ?>; // Waktu tersisa dalam detik
+            if (timeLeft > 0) {
+                startCountdown(timeLeft);
+            } else {
+                document.getElementById('countdown-timer').textContent = "Waktu habis! Silakan hubungi admin untuk informasi lebih lanjut.";
+            }
+        };
+    </script>
 </head>
 <body>
     <div class="container">
@@ -76,10 +135,17 @@ if ($order) {
         <?php if ($order) : ?>
             <div class="invoice-container">
                 <div class="invoice-header">
+                <?php if ($order['status_order'] === 'Belum Bayar') : ?>
+                            <div class="col-md-12 text-center rounded bg-info-subtle">
+                                <h4 class="text-primary">Waktu Tersisa untuk Membayar:</h4>
+                                <div id="countdown-timer" class="text-danger fw-bold fs-4"></div>
+                            </div>
+                        <?php endif; ?>
                     <h2 class="text-center">Detail Pesanan</h2>
                 </div>
                 <div class="container-fluid d-flex justify-content-center align-items-center">
                     <div class="invoice-details row ms-5">
+                        <!-- Informasi Pesanan -->
                         <p class="col-md-6"><strong>Order ID:</strong> <?php echo htmlspecialchars($order['id_order']); ?></p>
                         <p class="col-md-6"><strong>Tanggal Transaksi:</strong> <?php echo htmlspecialchars($formatted_date); ?></p>
                         <p class="col-md-6"><strong>Nomor Resi:</strong> <?php echo htmlspecialchars($order['resi_order']); ?></p>
