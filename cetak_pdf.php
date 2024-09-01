@@ -3,17 +3,16 @@ require 'vendor/autoload.php'; // Pastikan path ke autoload.php sesuai dengan se
 use Dompdf\Dompdf;
 use Dompdf\Options;
 
-// Inisialisasi Dompdf
-$options = new Options();
-$options->set('isHtml5ParserEnabled', true);
-$options->set('isPhpEnabled', true);
-$dompdf = new Dompdf($options);
-
 // Koneksi ke database
 include('./config.php');
 
 // Ambil ID order dari URL
 $order_id = filter_input(INPUT_GET, 'orderid', FILTER_SANITIZE_STRING);
+
+// Jika order_id tidak ada, tampilkan pesan error
+if (empty($order_id)) {
+    die('Order ID tidak ditemukan. Pastikan URL sudah benar.');
+}
 
 // Query untuk mendapatkan data pesanan berdasarkan ID
 $query = mysqli_query($config, "SELECT * FROM tb_order WHERE id_order = '$order_id'");
@@ -72,7 +71,7 @@ if ($order) {
                 <p><strong>Nama Customer:</strong> <?php echo htmlspecialchars($order['namacust_order']); ?></p>
                 <p><strong>Email:</strong> <?php echo htmlspecialchars($order['email_order']); ?></p>
                 <p><strong>No. HP:</strong> <?php echo htmlspecialchars($order['nohp_order']); ?></p>
-                <p><strong>Alamat:</strong> <?php echo htmlspecialchars($order['alamat_order']) .",". $order['kabupaten_order'] .",". $order['provinsi_order']; ?></p>
+                <p><strong>Alamat:</strong> <?php echo htmlspecialchars($order['alamat_order']) .",". htmlspecialchars($order['kabupaten_order']) .",". htmlspecialchars($order['provinsi_order']); ?></p>
                 <p><strong>Metode Pembayaran:</strong> Transfer <?php echo htmlspecialchars($order['metode_pembayaran']); ?></p>
                 <p><strong>Status:</strong> <?php echo htmlspecialchars($order['status_order']); ?></p>
             </div>
@@ -126,16 +125,6 @@ if ($order) {
     // Ambil konten HTML
     $html = ob_get_clean();
 
-    // Load HTML ke Dompdf
-    $dompdf->loadHtml($html);
-
-    // (Opsional) Atur ukuran kertas dan orientasi
-    $dompdf->setPaper('A4', 'portrait');
-
-    // Render PDF
-    $dompdf->render();
-
-    // Output PDF ke browser
-    $dompdf->stream('invoice.pdf', array('Attachment' => 0));
+    echo $html; // Tampilkan HTML sehingga bisa diambil oleh curl
 }
 ?>

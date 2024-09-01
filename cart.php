@@ -7,12 +7,27 @@ if(isset($_GET['hapus'])){
     header('Location: ./cart.php');
 }
 
+// Tambahkan variabel untuk pesan error dan sukses
+$error_message = '';
+$success_message = '';
+
 if (isset($_POST['transaksi'])) {
     $id_produk = intval($_POST['id_produk']);
     $qty = intval($_POST['qty']);
-    if ($qty > 0) {
-        $_SESSION['keranjang'][$id_produk] = $qty;
-        header('Location: ./cart.php');
+    
+    // Ambil stok produk dari database
+    $query = mysqli_query($config, "SELECT stok_produk FROM tb_produk WHERE id_produk = '$id_produk'");
+    $product = mysqli_fetch_assoc($query);
+    $stok_produk = $product['stok_produk'];
+    
+    if ($qty > $stok_produk) {
+        // Jika jumlah yang diminta melebihi stok, tampilkan pesan error
+        $error_message = "Jumlah yang dimasukkan melebihi stok yang tersedia.";
+    } else {
+        if ($qty > 0) {
+            $_SESSION['keranjang'][$id_produk] = $qty;
+            $success_message = "Keranjang berhasil diperbarui.";
+        }
     }
 }
 ?>
@@ -20,6 +35,16 @@ if (isset($_POST['transaksi'])) {
     
     <div class="bg-light">
         <?php if (isset($_SESSION['keranjang']) && count($_SESSION['keranjang']) > 0) : ?>
+            <?php if ($error_message): ?>
+                <div class="alert alert-danger text-center">
+                    <?php echo $error_message; ?>
+                </div>
+            <?php endif; ?>
+            <?php if ($success_message): ?>
+                <div class="alert alert-success text-center">
+                    <?php echo $success_message; ?>
+                </div>
+            <?php endif; ?>
             <?php
             $subtotal = 0;
             foreach ($_SESSION['keranjang'] as $id => $qty) :

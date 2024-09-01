@@ -1,9 +1,121 @@
 <?php
 include('../config.php');
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\Exception;
+use Dompdf\Dompdf;
+use Dompdf\Options;
+require '../vendor/autoload.php'; // Pastikan path ini benar dan mengarah ke autoload.php di folder vendor
 
 // Query untuk mendapatkan pesanan yang belum selesai (Belum Bayar, Proses Verifikasi, Sudah Bayar, Pengiriman)
 $query = mysqli_query($config, "SELECT * FROM tb_order WHERE status_order != 'Selesai'");
 $data = mysqli_fetch_all($query, MYSQLI_ASSOC);
+
+// Fungsi untuk mengirim notifikasi pengiriman via email
+function sendShipmentNotification($email, $order_id, $resi) {
+    global $smtp_host, $smtp_username, $smtp_password, $smtp_secure, $smtp_port, $nama_toko;
+
+    try {
+        $mail = new PHPMailer(true);
+
+        // Konfigurasi server email
+        $mail->isSMTP();
+        $mail->Host = $smtp_host;
+        $mail->SMTPAuth = true;
+        $mail->Username = $smtp_username;
+        $mail->Password = $smtp_password;
+        $mail->SMTPSecure = $smtp_secure;
+        $mail->Port = $smtp_port;
+
+        // Pengirim dan penerima
+        $mail->setFrom($smtp_username, $nama_toko);
+        $mail->addAddress($email);
+
+        // Konten email
+        $mail->isHTML(true);
+        $mail->Subject = "Pesanan Anda telah dikirim";
+        $mail->Body = "
+            <h2>Pesanan Anda dengan Order ID: $order_id telah dikirim!</h2>
+            <p>Nomor Resi: $resi</p>
+            <p>Terima kasih telah berbelanja di $nama_toko. Pesanan Anda sedang dalam perjalanan dan akan segera sampai di alamat yang Anda berikan.</p>
+            <p>Salam hangat,</p>
+            <p>$nama_toko</p>
+        ";
+
+        // Buat PDF untuk lampiran
+        $encoded_order_id = urlencode($order_id);
+        $target_url = 'http://localhost/notepro_shop/cetak_pdf.php?orderid=' . $encoded_order_id;
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $target_url);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+        $html = curl_exec($ch);
+        curl_close($ch);
+
+        if ($html === FALSE) {
+            throw new Exception("Gagal mendapatkan konten dari cetak_pdf.php melalui cURL.");
+        }
+
+        $invoice_folder = '../invoices/';
+        $pdf_file_name = "Invoice_$order_id.pdf";
+        $pdf_path = $invoice_folder . $pdf_file_name;
+
+        $dompdf = new Dompdf();
+        $dompdf->loadHtml($html);
+        $dompdf->setPaper('A4', 'portrait');
+        $dompdf->render();
+        file_put_contents($pdf_path, $dompdf->output());
+
+        // Tambahkan lampiran (invoice dalam bentuk PDF)
+        $mail->addAttachment($pdf_path, $pdf_file_name);
+
+        // Kirim email
+        $mail->send();
+
+        // Hapus file PDF setelah dikirim
+        unlink($pdf_path);
+
+    } catch (Exception $e) {
+        echo "Email tidak dapat dikirim. Mailer Error: {$mail->ErrorInfo}";
+    }
+}
+
+// Fungsi untuk mengirim email konfirmasi pembayaran
+function sendPaymentConfirmationEmail($email, $order_id) {
+    global $smtp_host, $smtp_username, $smtp_password, $smtp_secure, $smtp_port, $nama_toko, $no_whatsapp,$rekening_bri, $rekening_bca;
+    try {
+        $mail = new PHPMailer(true);
+
+        // Konfigurasi server email
+        $mail->isSMTP();
+        $mail->Host = $smtp_host;
+        $mail->SMTPAuth = true;
+        $mail->Username = $smtp_username;
+        $mail->Password = $smtp_password;
+        $mail->SMTPSecure = $smtp_secure;
+        $mail->Port = $smtp_port;
+
+        // Pengirim dan penerima
+        $mail->setFrom($smtp_username, $nama_toko);
+        $mail->addAddress($email);
+
+        // Konten email
+        $mail->isHTML(true);
+        $mail->Subject = "Pembayaran untuk Order ID: $order_id telah Dikonfirmasi";
+        $mail->Body = "
+            <h2>Pembayaran Anda telah berhasil dikonfirmasi!</h2>
+            <p>Order ID: $order_id</p>
+            <p>Terima kasih telah melakukan pembayaran. Pesanan Anda sedang diproses dan akan segera dikirimkan.</p>
+            <p>Anda dapat menghubungi kami melalui $no_whatsapp untuk informasi lebih lanjut.</p>
+            <p>Salam hangat,</p>
+            <p>$nama_toko</p>
+        ";
+
+        // Kirim email
+        $mail->send();
+
+    } catch (Exception $e) {
+        echo "Email tidak dapat dikirim. Mailer Error: {$mail->ErrorInfo}";
+    }
+}
 
 // Cek aksi dari URL
 if (isset($_GET['acc']) || isset($_GET['pending']) || isset($_GET['hapus']) || isset($_GET['konfirmasi'])) {
@@ -51,6 +163,14 @@ if (isset($_GET['acc']) || isset($_GET['pending']) || isset($_GET['hapus']) || i
             echo "Error: " . mysqli_error($config);
             exit;
         }
+
+        // Ambil informasi pelanggan untuk mengirim email
+        $customer_query = mysqli_query($config, "SELECT email_order FROM tb_order WHERE id_order = '$order_id'");
+        $customer = mysqli_fetch_assoc($customer_query);
+        $email = $customer['email_order'];
+
+        // Kirim notifikasi email pembayaran dikonfirmasi
+        sendPaymentConfirmationEmail($email, $order_id);
     }
 
     // Redirect setelah aksi
@@ -58,7 +178,6 @@ if (isset($_GET['acc']) || isset($_GET['pending']) || isset($_GET['hapus']) || i
     exit();
 }
 ?>
-
 
 <div class="container d-flex flex-column justify-content-center">
     <h4 class="text-center mt-3">List Pesanan</h4>
@@ -186,6 +305,15 @@ if (isset($_POST['submitResi'])) {
         echo "Error: " . mysqli_error($config);
         exit;
     }
+
+    // Ambil informasi pelanggan untuk mengirim email
+    $customer_query = mysqli_query($config, "SELECT email_order FROM tb_order WHERE id_order = '$order_id'");
+    $customer = mysqli_fetch_assoc($customer_query);
+    $email = $customer['email_order'];
+
+    // Kirim notifikasi email
+    sendShipmentNotification($email, $order_id, $resi);
+
     header('Location: ?page=check');
     exit();
 }

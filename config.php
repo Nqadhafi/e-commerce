@@ -4,6 +4,11 @@ if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
 
+require __DIR__ . '/vendor/autoload.php'; // Autoload Composer
+
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\Exception;
+
 $user = "root";
 $pwd = "";
 $host = "localhost";
@@ -16,6 +21,13 @@ $deskripsi_toko = "Menyediakan segala kebutuhan sparepart CCTV & Projektor";
 $rekening_bri = "12345789 a.n Agus";
 $rekening_bca = "4567898 a.n Agus";
 $api_rajaongkir = ""; //isi api mu
+
+// SMTP Configuration
+$smtp_host = ''; // Ganti dengan SMTP host Anda
+$smtp_username = ''; // Ganti dengan username email Anda
+$smtp_password = ''; // Ganti dengan password email Anda
+$smtp_secure = ''; // Ganti dengan 'ssl' jika diperlukan
+$smtp_port = 465; // Port SMTP
 
 if (!$config) {
     die("Error, tidak dapat terkoneksi dengan database.");
@@ -55,5 +67,4 @@ if (!function_exists('getCurlResponse')) {
         return $response;
     }
 }
-
 ?>

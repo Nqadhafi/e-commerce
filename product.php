@@ -26,9 +26,13 @@ if(isset($_POST['transaksi'])){
     case ('Tambah ke Keranjang'):
         $qty = $_POST['qty'];
         
-        if ($qty > $stok_produk) {
+        // Periksa jumlah total produk di keranjang
+        $total_qty_in_cart = isset($_SESSION['keranjang'][$id]) ? $_SESSION['keranjang'][$id] : 0;
+        $total_qty_after_addition = $total_qty_in_cart + $qty;
+
+        if ($total_qty_after_addition > $stok_produk) {
             echo "<script>
-                alert('Jumlah produk melebihi stok yang tersedia.');
+                alert('Jumlah produk di keranjang melebihi stok yang tersedia.');
                 window.location.href='./product.php?id=" . $id . "';
             </script>";
         } else {
@@ -50,6 +54,7 @@ if(isset($_POST['transaksi'])){
 
     }
 }
+
 
 
 ?>
